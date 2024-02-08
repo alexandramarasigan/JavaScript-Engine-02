@@ -44,6 +44,10 @@ export class Input {
         } else if (e.button==2)	{
             this.inputs.rclick = false;
         }
+        else if (e.button == 2) { 
+            this.inputs.rclick = false;
+            this.inputs.rclickReleased = true;
+        }
     }
 
     onContextMenu(e) {
@@ -56,10 +60,12 @@ export class Input {
         const dt = 1/60;
         const dx = x - this.inputs.mouse.position.x;
         const dy = y - this.inputs.mouse.position.y;
-        const velocity = new Vec(dx / dt, dy / dt);
         this.inputs.mouse.position.x = x;
         this.inputs.mouse.position.y = y;
-        this.inputs.mouse.velocity = velocity;
+        if (this.inputs.rclick) {
+            const velocity = new Vec(dx / dt, dy / dt);
+            this.inputs.mouse.velocity = velocity;
+        }
     }
 
     resizeCanvas() {

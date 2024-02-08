@@ -110,6 +110,17 @@ function updateAndDraw() {
     } else if (shapeBeingMade instanceof Rect) {
         renderer.drawRect(shapeBeingMade, bordCol, null);
     }
+
+    if (inp.inputs.rclickReleased && movingShape) {
+        for (let i = 0; i < objects.length; i++) {
+            if (objects[i].isMoved) {
+                objects[i].velocity = inp.inputs.mouse.velocity;
+                objects[i].isMoved = false;
+            }
+        }
+        movingShape = false;
+        inp.inputs.rclickReleased = false;
+    }
 }
 let renderInterval = setInterval(updateAndDraw, 1000 / 60);
 
