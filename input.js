@@ -8,6 +8,7 @@ export class Input {
         this.inputs = {
             mouse: {
                 position: new Vec(0, 0),
+                velocity: new Vec(0, 0),
             },
             lclick: false,
             rclick: false
@@ -52,8 +53,13 @@ export class Input {
     mouseMove(e) {
         const x = e.pageX - this.canv.offsetLeft;
         const y = e.pageY - this.canv.offsetTop;
+        const dt = 1/60;
+        const dx = x - this.inputs.mouse.position.x;
+        const dy = y - this.inputs.mouse.position.y;
+        const velocity = new Vec(dx / dt, dy / dt);
         this.inputs.mouse.position.x = x;
         this.inputs.mouse.position.y = y;
+        this.inputs.mouse.velocity = velocity;
     }
 
     resizeCanvas() {

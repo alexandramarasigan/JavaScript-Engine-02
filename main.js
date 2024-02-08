@@ -96,6 +96,7 @@ function updateAndDraw() {
         if(objects[i].isMoved) {
             const movedObj = objects[i];
             movedObj.shape.position.copy(inp.inputs.mouse.position); //updates the position of the moved obj
+            movedObj.velocity.copy(inp.inputs.mouse.velocity);
         }
     }
 

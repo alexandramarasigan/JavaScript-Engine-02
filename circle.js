@@ -1,5 +1,6 @@
-export class Circle {   //also you could do extends RigidBody
+export class Circle extends RigidBody {   //also you could do extends RigidBody
     constructor(pos, r) {
+        super({position: pos, radius: r});
         this.position = pos;
         this.radius = r;
     }
