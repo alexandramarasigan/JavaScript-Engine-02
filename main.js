@@ -100,6 +100,10 @@ function updateAndDraw() {
         }
     }
 
+    //update objects
+    for (let i = 0; i<objects.length; i++) {
+        objects[i].updateShape(dt);
+    }
     //draw objects
     renderer.clearFrame();  //first clear
     renderer.drawFrame(objects, fillCol, bordCol);
