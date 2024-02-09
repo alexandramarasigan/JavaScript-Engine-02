@@ -100,6 +100,10 @@ function updateAndDraw() {
         }
     }
 
+     //update objects
+     for (let i = 0; i<objects.length; i++) {
+        objects[i].updateShape(dt);
+    }
     //draw objects
     renderer.clearFrame();  //first clear
     renderer.drawFrame(objects, fillCol, bordCol);
@@ -115,7 +119,7 @@ function updateAndDraw() {
         for (let i = 0; i < objects.length; i++) {
             if (objects[i].isMoved) {
                 objects[i].velocity = inp.inputs.mouse.velocity;
-                objects[i].isMoved = false;
+                objects[i].isMoved = true;
             }
         }
         movingShape = false;
