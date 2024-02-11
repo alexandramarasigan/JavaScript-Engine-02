@@ -4,6 +4,7 @@ import {Rect} from './rect.js';
 import {Vec} from './vector.js';
 import {Input} from './input.js';
 import {RigidBody} from './rigidBody.js';
+import {Collisions} from './collisions.js';
 
 //simulation constants
 const SMALLEST_RADIUS = 10;
@@ -104,6 +105,11 @@ function updateAndDraw() {
      for (let i = 0; i<objects.length; i++) {
         objects[i].updateShape(dt);
     }
+
+    col.clearCollisions();
+    col.narrowPhazeDetection(objects);
+    col.resolveCollisions();
+
     //draw objects
     renderer.clearFrame();  //first clear
     renderer.drawFrame(objects, fillCol, bordCol);

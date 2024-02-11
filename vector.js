@@ -41,6 +41,15 @@ export class Vec {
 		return this;
 	}
 
+    normalize() {
+        const length = this.magnitude();
+        if(length > 0) {
+            this.x /= length;
+            this.y /= length;
+        }
+        return this;
+    }
+
     //non-chainable methods
     clone() {   //create a new vector with the same coordinates
         return new Vec(this.x, this.y);
