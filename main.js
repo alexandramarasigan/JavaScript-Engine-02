@@ -23,6 +23,8 @@ const renderer = new Renderer(canv, ctx);   //object from imported class Rendere
 const fillCol = "darkGray";
 const bordCol = "black";
 
+const col = new Collisions();
+
 const objects = [];
 let shapeBeingMade = null;
 let movingShape = false;
