@@ -1,4 +1,5 @@
 import {Circle} from './circle.js';
+import {Rect} from './rect.js'
 
 export class Collisions {
     constructor() {
@@ -10,19 +11,17 @@ export class Collisions {
     }
 
     narrowPhazeDetection(objects) {
-        for (let i=0; i<objects.length; i++) {
-            for (let j=0; j<objects.length; j++) {  //try j=i+1
-                if(j > i) {
-                    //detect collisions
-                    if(objects[i].shape instanceof Circle && 
-                        objects[j].shape instanceof Circle) {
-                        this.detectCollisionCircleCircle(objects[i], objects[j]);
-                    }   //later detect rectangle rectangle here
+        for (let i = 0; i < objects.length; i++) {
+            for (let j = i + 1; j < objects.length; j++) { 
+                if (objects[i] instanceof Rect && objects[j] instanceof Rect) {
+                    this.detectCollisionRectangleRectangle(objects[i], objects[j]);
+                } else if (objects[i] instanceof Circle && objects[j] instanceof Circle) {
+                    this.detectCollisionCircleCircle(objects[i], objects[j]);
                 }
             }
         }
     }
-
+    
     detectCollisionCircleCircle(o1, o2) {   //o1 and o2 are rigidBodies from array objects in main
         const s1 = o1.shape;    //rigidBodies have shape circle or rectangle
         const s2 = o2.shape;    //shape has position and radius
@@ -38,6 +37,22 @@ export class Collisions {
             })
         }
     }
+
+    detectCollisionRectangleRectangle(rect1, rect2) {
+        const rect1Left = rect1.position.x - rect1.width / 2;
+        const rect1Right = rect1.position.x + rect1.width / 2;
+        const rect1Top = rect1.position.y - rect1.height / 2;
+        const rect1Bottom = rect1.position.y + rect1.height / 2;
+    
+        const rect2Left = rect2.position.x - rect2.width / 2;
+        const rect2Right = rect2.position.x + rect2.width / 2;
+        const rect2Top = rect2.position.y - rect2.height / 2;
+        const rect2Bottom = rect2.position.y + rect2.height / 2;
+    
+        if (rect1Right >= rect2Left && rect1Left <= rect2Right && rect1Bottom >= rect2Top && rect1Top <= rect2Bottom) {
+            console.log(true);
+        }
+    }    
 
     //detect rectangles collisions
 
