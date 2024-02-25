@@ -14,7 +14,7 @@ export class Collisions {
         for (let i = 0; i < objects.length; i++) {
             for (let j = i + 1; j < objects.length; j++) { 
                 if (objects[i].shape instanceof Rect && objects[j].shape instanceof Rect) {
-                    this.detectCollisionRectangleRectangle(objects[i], objects[j]); //try passing object.shape here, or change the method to use rect1.shape etc
+                    this.detectCollisionRectangleRectangle(objects[i].shape, objects[j].shape); //try passing object.shape here, or change the method to use rect1.shape etc
                 } else if (objects[i].shape instanceof Circle && objects[j].shape instanceof Circle) {
                     this.detectCollisionCircleCircle(objects[i], objects[j]);
                 }
