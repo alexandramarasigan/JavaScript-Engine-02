@@ -10,6 +10,7 @@ export class Renderer {
     drawFrame(objects, fillCol, bordCol) {
         for (let i = 0; i<objects.length; i++) {
             objects[i].shape.draw(this.ctx, fillCol, bordCol);
+            //draw vertices and aabb
         } 
     }
 

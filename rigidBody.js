@@ -13,6 +13,8 @@ export class RigidBody {
 		this.shape.position.add(ds);
 
 		this.shape.orientation += this.angularVelocity * dt;
+
+		//update vertices and aabb of shape if it is rectangle
     } 
 
 }
