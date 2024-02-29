@@ -11,14 +11,11 @@ export class RigidBody {
 	updateShape(dt) {
 		const ds = this.velocity.clone().multiply(dt);  //multiply v * dt = giving you displacement per frame
 		this.shape.position.add(ds);
-
+		this.shape.orientation += this.angularVelocity * dt;
+		//here I update the position and orientation first, then update the aabb
 		if (this.shape.updateAabb) {
             this.shape.updateAabb();
         }
-
-		this.shape.orientation += this.angularVelocity * dt;
-
-		//update vertices and aabb of shape if it is rectangle
     } 
 
 }

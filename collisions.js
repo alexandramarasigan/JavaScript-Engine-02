@@ -32,7 +32,7 @@ export class Collisions {
         }
     }
 
-    narrowPhazeDetection(objects) {
+    narrowPhaseDetection(objects) {
         for (let i=0; i<objects.length; i++) {
             for (let j=0; j<objects.length; j++) {  //try j=i+1
                 if(j > i) {
