@@ -8,10 +8,11 @@ export class Renderer {
     }
     
     drawFrame(objects, fillCol, bordCol) {
-        for (let i = 0; i<objects.length; i++) {
-            objects[i].shape.draw(this.ctx, fillCol, bordCol);
-            //draw vertices and aabb
-        } 
+        objects.forEach(object => {
+            object.shape.draw(this.ctx, bordCol, fillCol);
+            // Draw AABB
+            object.shape.aabb.draw(this.ctx, "red");
+        });
     }
 
     clearFrame() {

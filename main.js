@@ -37,7 +37,6 @@ rectButton.onclick = function() {
 
 //MAIN LOOP
 function updateAndDraw() {
-
     //make objects
     if (inp.inputs.lclick && shapeBeingMade == null) {
         //lesson 03 - make rectangles with mouse
@@ -85,7 +84,7 @@ function updateAndDraw() {
 
     //COLLISIONS
     col.clearCollisions();
-    col.narrowPhazeDetection(objects);  //detect all possible collisions
+    col.broadPhaseDetection(objects);  //detect all possible collisions
     col.resolveCollisions();    //push off
 
     //draw objects

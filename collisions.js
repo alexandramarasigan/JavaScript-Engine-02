@@ -3,10 +3,33 @@ import {Circle} from './circle.js';
 export class Collisions {
     constructor() {
         this.collisions = [];
+        this.possibleCollisions = [];
     }
 
     clearCollisions() {
         this.collisions = [];
+    }
+
+    broadPhaseDetection(objects) {
+        for (let i = 0; i < objects.length; i++) {
+            for (let j = i + 1; j < objects.length; j++) {
+                if (this.detectAabbCollision(objects[i].shape.aabb, objects[j].shape.aabb)) {
+                    console.log("AABB collision detected");
+                    this.narrowPhaseDetection(objects[i], objects[j]);
+                }
+            }
+        }
+    }
+
+    detectAabbCollision(aabb1, aabb2) {
+        const isSeparatedOnX = aabb1.max.x < aabb2.min.x || aabb2.max.x < aabb1.min.x;
+        const isSeparatedOnY = aabb1.max.y < aabb2.min.y || aabb2.max.y < aabb1.min.y;
+
+        if (!isSeparatedOnX && !isSeparatedOnY) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     narrowPhazeDetection(objects) {
