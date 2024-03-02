@@ -1,4 +1,5 @@
 import {Vec} from './vector.js';
+import {Aabb} from './/aabb.js';
 
 export class Rect {
 	constructor(pos, w, h) {
@@ -35,6 +36,7 @@ export class Rect {
 
         }
         this.aabb.min.x = minX;
+        this.aabb.max.x = maxX;
     }
 
 	draw(ctx, strokeColor, fillColor) {

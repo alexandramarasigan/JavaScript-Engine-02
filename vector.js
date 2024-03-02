@@ -19,6 +19,11 @@ export class Vec {
 		this.y = y
 		return this;
 	}
+	set(x, y) {
+        this.x = x;
+        this.y = y;
+        return this;
+    }
 	add (v) {		//add a vector to this
 		this.x += v.x;
 		this.y += v.y;

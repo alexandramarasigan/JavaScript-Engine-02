@@ -1,5 +1,5 @@
 import {Vec} from './vector.js';
-import {Aabb} from './aabb.js'
+import {Aabb} from './aabb.js';
 
 export class Circle {
 	constructor(pos, r) {
@@ -11,7 +11,8 @@ export class Circle {
     updateAabb() {
         this.aabb.min.set(this.position.x - this.radius, this.position.y - this.radius);
         this.aabb.max.set(this.position.x + this.radius, this.position.y + this.radius);
-        }
+        
+    }
 
 	draw(ctx, strokeColor, fillColor) {
         ctx.beginPath();
