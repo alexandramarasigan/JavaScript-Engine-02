@@ -9,9 +9,13 @@ export class Circle {
 	}
     
     updateAabb() {
+        //you have not yet defined the method set in vector!
         this.aabb.min.set(this.position.x - this.radius, this.position.y - this.radius);
         this.aabb.max.set(this.position.x + this.radius, this.position.y + this.radius);
+<<<<<<< HEAD
         
+=======
+>>>>>>> 64fcd8b551ee92658e03cc10dda2d109d4091289
     }
 
 	draw(ctx, strokeColor, fillColor) {
