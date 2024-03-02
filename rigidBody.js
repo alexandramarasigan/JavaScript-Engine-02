@@ -11,9 +11,8 @@ export class RigidBody {
 
 	updateShape(dt) {
 		const ds = this.velocity.clone().multiply(dt);  //multiply v * dt = giving you displacement per frame
-		this.shape.position.add(ds);
+		this.shape.position.add(ds);		
 
-		
 		//update vertices and aabb of shape if it is rectangle
 		if (this.shape instanceof Rect) {
 			this.shape.updateVertices();
