@@ -31,13 +31,18 @@ export class Rect {
         for (let i=0; i<this.vertices.length; i++) {
             vertexX = this.vertices[i].x;
             vertexY = this.vertices[i].y;
-
-            minX = vertexX < minX ? vertexX : minX;
+             //find the min and max x and y
+            minX = vertexX < minX ? vertexX : minX; 
+            maxX = vertexX > maxX ? vertexX : maxX;
+            minY = vertexY < minY ? vertexY : minY;
+            maxY = vertexY > maxY ? vertexY : maxY;
 
         }
+        //store min and max y in aabb
         this.aabb.min.x = minX;
-
+        this.aabb.min.y = minY;
         this.aabb.max.x = maxX;
+        this.aabb.max.y = maxY;
     }
 
 	draw(ctx, strokeColor, fillColor) {
