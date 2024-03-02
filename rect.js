@@ -1,9 +1,5 @@
 import {Vec} from './vector.js';
-<<<<<<< HEAD
 import {Aabb} from './/aabb.js';
-=======
-import {Aabb} from './aabb.js';
->>>>>>> 64fcd8b551ee92658e03cc10dda2d109d4091289
 
 export class Rect {
 	constructor(pos, w, h) {
@@ -40,11 +36,8 @@ export class Rect {
 
         }
         this.aabb.min.x = minX;
-<<<<<<< HEAD
+
         this.aabb.max.x = maxX;
-=======
-        //fix this to also calculate and store aabb.max
->>>>>>> 64fcd8b551ee92658e03cc10dda2d109d4091289
     }
 
 	draw(ctx, strokeColor, fillColor) {

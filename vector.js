@@ -19,19 +19,11 @@ export class Vec {
 		this.y = y
 		return this;
 	}
-<<<<<<< HEAD
 	set(x, y) {
         this.x = x;
         this.y = y;
         return this;
     }
-=======
-
-	//define method set here
-	
-
-
->>>>>>> 64fcd8b551ee92658e03cc10dda2d109d4091289
 	add (v) {		//add a vector to this
 		this.x += v.x;
 		this.y += v.y;
