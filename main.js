@@ -1,33 +1,36 @@
 import {Renderer} from './renderer.js';
 import {Circle} from './circle.js';
 import {Rect} from './rect.js';
-import {Vec} from './vector.js';
 import {Input} from './input.js';
 import {RigidBody} from './rigidBody.js';
 import {Collisions} from './collisions.js';
+<<<<<<< HEAD
+=======
+import {Vec} from './vector.js';
+>>>>>>> 9c4beda83c2b4d5a9cda3b3b6e3fd43639cf261c
 
-//simulation constants
 const SMALLEST_RADIUS = 10;
-const LOWEST_DISTANCE_MOVING_OBJ = 30;
-const dt = 1/60;    //based on seconds per frame
+const dt = 1/60;    //time per frame
 
-const canv = document.getElementById("canvas"); //find canvas element on web page
-const ctx = canv.getContext("2d");  //used for drawing shapes on canvas
+const canv = document.getElementById("canvas");
+const ctx = canv.getContext("2d");
 
-const inp = new Input(canv, window);
-inp.resizeCanvas();
-inp.addListeners();
-
-
-const renderer = new Renderer(canv, ctx);   //object from imported class Renderer
+const renderer = new Renderer(canv, ctx);
 const fillCol = "darkGray";
 const bordCol = "black";
 
 const col = new Collisions();
 
+<<<<<<< HEAD
+=======
+//inputs
+const inp = new Input(canv, window, dt);
+inp.resizeCanvas();
+inp.addListeners();
+
+>>>>>>> 9c4beda83c2b4d5a9cda3b3b6e3fd43639cf261c
 const objects = [];
 let shapeBeingMade = null;
-let movingShape = false;
 //button variables
 let shapeSelected = 'r';
 const circleButton = document.getElementById("c");
@@ -39,9 +42,9 @@ rectButton.onclick = function() {
     shapeSelected = 'r';
 };
 
-
 //MAIN LOOP
 function updateAndDraw() {
+
     //make objects
     if (inp.inputs.lclick && shapeBeingMade == null) {
         //lesson 03 - make rectangles with mouse
@@ -64,30 +67,21 @@ function updateAndDraw() {
         shapeBeingMade.height = selectionVector.y > SMALLEST_RADIUS ? selectionVector.y * 2 : SMALLEST_RADIUS * 2;
     }
 
-    //add objects
-    if (shapeBeingMade && !inp.inputs.lclick) { //store ready circle after releasing left click
-        addObject(shapeBeingMade);   //push means add object to array
+    //add objects - lesson 03
+    if (shapeBeingMade && !inp.inputs.lclick) {
+        addObject(shapeBeingMade);
         shapeBeingMade = null;
     }
 
-    //move the objects with the mouse
-    let closestObji = null;
-    let distanceMouseObj;
-    let currentLowestDist = LOWEST_DISTANCE_MOVING_OBJ;
-    if(inp.inputs.rclick && !inp.inputs.lclick && !movingShape) {
-        for (let i = 0; i<objects.length; i++) {    //for loop - iterate over all the objects in the array
-            const obj = objects[i];
-            distanceMouseObj = obj.shape.position.distanceTo(inp.inputs.mouse.position);
-            if (distanceMouseObj < currentLowestDist) {
-                currentLowestDist = distanceMouseObj;
-                closestObji = i;    //the i of the closest object to the mouse
-            }
-        }
+    //move objects with mouse
+    if(!inp.inputs.lclick && inp.inputs.rclick && !inp.inputs.mouse.movedObject) {
+        const closestObject = findClosestObject(objects, inp.inputs.mouse.position);
+        inp.inputs.mouse.movedObject = closestObject == null ? null : closestObject;
     }
-    if(closestObji != null) {
-        movingShape = true;
-        objects[closestObji].isMoved = true;
+    if(!inp.inputs.rclick || inp.inputs.lclick) {
+        inp.inputs.mouse.movedObject = null;
     }
+<<<<<<< HEAD
     if (movingShape && !inp.inputs.rclick) {
         movingShape = false;   //stop moving objects
         for(let i=0; i<objects.length; i++) {
@@ -111,18 +105,32 @@ function updateAndDraw() {
     col.clearCollisions();
     col.narrowPhazeDetection(objects);
     col.resolveCollisions();
-
-    //draw objects
-    renderer.clearFrame();  //first clear
-    renderer.drawFrame(objects, fillCol, bordCol);
-    //draw shape
-    if (shapeBeingMade instanceof Circle) {
-        renderer.drawCircle(shapeBeingMade, bordCol, null);
-        //lesson 03 - draw rectangle shape
-    } else if (shapeBeingMade instanceof Rect) {
-        renderer.drawRect(shapeBeingMade, bordCol, null);
+=======
+    if(inp.inputs.mouse.movedObject) {
+        moveObjectWithMouse(inp.inputs.mouse.movedObject);
     }
 
+    //Lesson 03 - update object positions with velocity
+    for(let i=0; i<objects.length; i++) {
+        objects[i].updateShape(dt);
+    }
+
+    //COLLISIONS
+    col.clearCollisions();
+    col.broadPhazeDetection(objects);
+    col.narrowPhazeDetection(objects);  //detect all possible collisions
+    col.resolveCollisions();    //push off
+>>>>>>> 9c4beda83c2b4d5a9cda3b3b6e3fd43639cf261c
+
+    //draw objects
+    renderer.clearFrame();
+    renderer.drawFrame(objects, fillCol, bordCol);
+    //draw shape
+    if (shapeBeingMade) {
+        shapeBeingMade.draw(ctx, bordCol, null);
+    }
+
+<<<<<<< HEAD
     if (inp.inputs.rclickReleased && movingShape) {
         for (let i = 0; i < objects.length; i++) {
             if (objects[i].isMoved) {
@@ -133,9 +141,63 @@ function updateAndDraw() {
         movingShape = false;
         inp.inputs.rclickReleased = false;
     }
+=======
+>>>>>>> 9c4beda83c2b4d5a9cda3b3b6e3fd43639cf261c
 }
 let renderInterval = setInterval(updateAndDraw, 1000 / 60);
 
+function findClosestObject(objects, vector) {
+    let closestObject = null;
+    let distance;
+    let lowestDistance = 30;
+    for(let i=0; i<objects.length; i++) {
+        distance = objects[i].shape.position.distanceTo(vector);
+        if (distance < lowestDistance) {
+            lowestDistance = distance;
+            closestObject = objects[i];
+        }
+    }
+    return closestObject;
+}
+
+function moveObjectWithMouse(object) {
+    object.shape.position.copy(inp.inputs.mouse.position);
+    object.velocity.copy(inp.inputs.mouse.velocity);
+}
+
 function addObject(shape) {
+<<<<<<< HEAD
     objects.push(new RigidBody(shape));
 }
+=======
+    const object = new RigidBody(shape);  
+    objects.push(object);
+} 
+
+//test code
+let grade;
+let score = -100; //declare a variable
+switch (true) {
+    case (score < 0): grade = "Invalid Grade"; break;
+    case (score < 60): grade = "F"; break;
+    case (score < 70): grade = "D"; break;
+    case (score < 80): grade = "C"; break;
+    case (score < 90): grade = "B"; break;
+    default: grade = "A";
+}
+
+const origin = new Vec(100, 100);
+
+const vector1 = new Vec(50, 60);
+vector1.renderOrigin = origin;
+vector1.color = "red";
+
+const vector2 = new Vec(-50, 60);
+vector2.renderOrigin = origin;
+vector2.color = "blue";
+
+const testVector = vector1.clone().add(vector2);
+testVector.renderOrigin = origin;
+
+renderer.renderedAlways.push(vector1, vector2, testVector);
+>>>>>>> 9c4beda83c2b4d5a9cda3b3b6e3fd43639cf261c
