@@ -26,6 +26,12 @@ export class Renderer {
 
     }
 
+    drawText(text, position, color = 'black', font = '16px Arial') {
+        this.ctx.fillStyle = color;
+        this.ctx.font = font;
+        this.ctx.fillText(text, position.x, position.y);
+    }
+
     clearFrame() {
         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }

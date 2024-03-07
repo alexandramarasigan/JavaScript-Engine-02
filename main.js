@@ -150,4 +150,17 @@ vector2.color = "blue";
 const testVector = vector1.clone().add(vector2);
 testVector.renderOrigin = origin;
 
-renderer.renderedAlways.push(vector1, vector2, testVector);
+const vector3 = new Vec(150, 160);
+const vector4 = new Vec(200, -160);
+const differenceVector = vector1.clone().subtract(vector2);
+const multipliedVector = new Vec(120, 30); 
+const multipliedResult = multipliedVector.clone().multiply(2); 
+const rotatedVector = new Vec(100, 100); 
+const rotatedResult = rotatedVector.clone().rotate(Math.PI / 2);
+
+renderer.renderedAlways.push(vector3, vector4, differenceVector, multipliedVector, multipliedResult, rotatedVector, rotatedResult);
+
+renderer.drawText("Addition", new Vec(100, 30));
+renderer.drawText("Subtraction", new Vec(300, 30));
+renderer.drawText("Multiplication", new Vec(500, 30));
+renderer.drawText("Rotation", new Vec(700, 30));
