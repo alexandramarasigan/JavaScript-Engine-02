@@ -108,19 +108,22 @@ export class Vec {
 			ctx.strokeStyle = strokeColor;
 		}
         ctx.lineWidth = 3;
-		const renderEnd = this.renderOrigin.clone().add(this);
-		//line from vector tail to vector head
-		ctx.beginPath();
-		ctx.moveTo(this.renderOrigin.x, this.renderOrigin.y);
-		ctx.lineTo(renderEnd.x, renderEnd.y);
+		if(this.renderOrigin) {
+			const renderEnd = this.renderOrigin.clone().add(this);
+			//line from vector tail to vector head
+			ctx.beginPath();
+			ctx.moveTo(this.renderOrigin.x, this.renderOrigin.y);
+			ctx.lineTo(renderEnd.x, renderEnd.y);
 
-		ctx.stroke();
-
-		//circle at vector head
-		ctx.beginPath();
-        ctx.arc(renderEnd.x, renderEnd.y, 5, 0, Math.PI*2, true);	//radius 5
-        ctx.closePath();
+			ctx.stroke();
+			//circle at vector head
+			ctx.beginPath();
+        	ctx.arc(renderEnd.x, renderEnd.y, 5, 0, Math.PI*2, true);	//radius 5
+        	ctx.closePath();
         
-        ctx.stroke();
+        	ctx.stroke();
+		}
+		
+		
 	}
 }
