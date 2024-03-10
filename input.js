@@ -6,17 +6,8 @@ export class Input {
         this.window = win;
         this.dt = dt;
         this.inputs = {
-<<<<<<< HEAD
-            mouse: {
-                position: new Vec(0, 0),
-                velocity: new Vec(0, 0),
-            },
-            lclick: false,
-            rclick: false
-=======
             mouse: {position: new Vec(0, 0), velocity: new Vec(0, 0), movedObject: null}, 
             lclick: false, rclick: false, space: false, touches: 0
->>>>>>> 9c4beda83c2b4d5a9cda3b3b6e3fd43639cf261c
         };
         
         this.mouseDown = this.mouseDown.bind(this);
@@ -64,17 +55,6 @@ export class Input {
 
         const x = e.pageX - this.canv.offsetLeft;
         const y = e.pageY - this.canv.offsetTop;
-<<<<<<< HEAD
-        const dt = 1/60;
-        const dx = x - this.inputs.mouse.position.x;
-        const dy = y - this.inputs.mouse.position.y;
-        this.inputs.mouse.position.x = x;
-        this.inputs.mouse.position.y = y;
-        if (this.inputs.rclick) {
-            const velocity = new Vec(dx / dt, dy / dt);
-            this.inputs.mouse.velocity = velocity;
-        }
-=======
 
         const dx = x - this.inputs.mouse.position.x;
         const dy = y - this.inputs.mouse.position.y;
@@ -88,7 +68,6 @@ export class Input {
             this.inputs.mouse.velocity.x = 0; 
             this.inputs.mouse.velocity.y = 0;
         }.bind(this), 100);
->>>>>>> 9c4beda83c2b4d5a9cda3b3b6e3fd43639cf261c
     }
 
     resizeCanvas() {

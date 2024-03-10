@@ -71,21 +71,6 @@ export class Vec {
 		return this;
 	}
 
-<<<<<<< HEAD
-    normalize() {
-        const length = this.magnitude();
-        if(length > 0) {
-            this.x /= length;
-            this.y /= length;
-        }
-        return this;
-    }
-
-    //non-chainable methods
-    clone() {   //create a new vector with the same coordinates
-        return new Vec(this.x, this.y);
-    }
-=======
 	normalize() {
 		const length = this.magnitude();
 		if(length > 0) {
@@ -94,7 +79,6 @@ export class Vec {
 		}
 		return this;
 	}
->>>>>>> 9c4beda83c2b4d5a9cda3b3b6e3fd43639cf261c
 
 	rotate(angle) {	//in formula angle is Theta
 		const x = this.x;	//Ax

@@ -1,13 +1,7 @@
-<<<<<<< HEAD
-import { RigidBody } from './rigidBody.js';
-
-export class Rect extends RigidBody {
-=======
 import {Vec} from './vector.js';
 import {Aabb} from './aabb.js';
 
 export class Rect {
->>>>>>> 9c4beda83c2b4d5a9cda3b3b6e3fd43639cf261c
 	constructor(pos, w, h) {
 		super({position: pos, width: w, height: h});
 		this.position = pos;
