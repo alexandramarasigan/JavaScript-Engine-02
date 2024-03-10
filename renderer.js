@@ -7,8 +7,15 @@ export class Renderer {
         this.ctx = ctx;
         this.renderedAlways = [];
         this.renderedNextFrame = [];
+        this.texts = [];
     }
     
+    drawText(textObject) {
+        this.ctx.fillStyle = textObject.color;
+        this.ctx.font = textObject.font;
+        this.ctx.fillText(textObject.text, textObject.position.x, textObject.position.y);
+    }
+
     drawFrame(objects, fillCol, bordCol) {
         for (let i = 0; i<objects.length; i++) {
             const shape = objects[i].shape;
@@ -23,7 +30,9 @@ export class Renderer {
         for (let i = 0; i<this.renderedAlways.length; i++) {
             this.renderedAlways[i].draw(this.ctx, bordCol);
         }
-
+        this.texts.forEach(text => {
+            this.drawText(text);
+        });
     }
 
     clearFrame() {

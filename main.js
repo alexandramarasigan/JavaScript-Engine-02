@@ -4,10 +4,7 @@ import {Rect} from './rect.js';
 import {Input} from './input.js';
 import {RigidBody} from './rigidBody.js';
 import {Collisions} from './collisions.js';
-<<<<<<< HEAD
-=======
 import {Vec} from './vector.js';
->>>>>>> 9c4beda83c2b4d5a9cda3b3b6e3fd43639cf261c
 
 const SMALLEST_RADIUS = 10;
 const dt = 1/60;    //time per frame
@@ -21,14 +18,11 @@ const bordCol = "black";
 
 const col = new Collisions();
 
-<<<<<<< HEAD
-=======
 //inputs
 const inp = new Input(canv, window, dt);
 inp.resizeCanvas();
 inp.addListeners();
 
->>>>>>> 9c4beda83c2b4d5a9cda3b3b6e3fd43639cf261c
 const objects = [];
 let shapeBeingMade = null;
 //button variables
@@ -81,31 +75,6 @@ function updateAndDraw() {
     if(!inp.inputs.rclick || inp.inputs.lclick) {
         inp.inputs.mouse.movedObject = null;
     }
-<<<<<<< HEAD
-    if (movingShape && !inp.inputs.rclick) {
-        movingShape = false;   //stop moving objects
-        for(let i=0; i<objects.length; i++) {
-            objects[i].isMoved = false; //when not rclick anymore set isMoved to false
-        } 
-    }
-    //update the positions and velocities for all moved objects
-    for (let i = 0; i<objects.length; i++) {
-        if(objects[i].isMoved) {
-            const movedObj = objects[i];
-            movedObj.shape.position.copy(inp.inputs.mouse.position); //updates the position of the moved obj
-            movedObj.velocity.copy(inp.inputs.mouse.velocity);
-        }
-    }
-
-     //update objects
-     for (let i = 0; i<objects.length; i++) {
-        objects[i].updateShape(dt);
-    }
-
-    col.clearCollisions();
-    col.narrowPhazeDetection(objects);
-    col.resolveCollisions();
-=======
     if(inp.inputs.mouse.movedObject) {
         moveObjectWithMouse(inp.inputs.mouse.movedObject);
     }
@@ -120,7 +89,6 @@ function updateAndDraw() {
     col.broadPhazeDetection(objects);
     col.narrowPhazeDetection(objects);  //detect all possible collisions
     col.resolveCollisions();    //push off
->>>>>>> 9c4beda83c2b4d5a9cda3b3b6e3fd43639cf261c
 
     //draw objects
     renderer.clearFrame();
@@ -130,19 +98,6 @@ function updateAndDraw() {
         shapeBeingMade.draw(ctx, bordCol, null);
     }
 
-<<<<<<< HEAD
-    if (inp.inputs.rclickReleased && movingShape) {
-        for (let i = 0; i < objects.length; i++) {
-            if (objects[i].isMoved) {
-                objects[i].velocity = inp.inputs.mouse.velocity;
-                objects[i].isMoved = true;
-            }
-        }
-        movingShape = false;
-        inp.inputs.rclickReleased = false;
-    }
-=======
->>>>>>> 9c4beda83c2b4d5a9cda3b3b6e3fd43639cf261c
 }
 let renderInterval = setInterval(updateAndDraw, 1000 / 60);
 
@@ -166,13 +121,11 @@ function moveObjectWithMouse(object) {
 }
 
 function addObject(shape) {
-<<<<<<< HEAD
     objects.push(new RigidBody(shape));
 }
-=======
     const object = new RigidBody(shape);  
     objects.push(object);
-} 
+
 
 //test code
 let grade;
@@ -186,6 +139,8 @@ switch (true) {
     default: grade = "A";
 }
 
+
+//addition
 const origin = new Vec(100, 100);
 
 const vector1 = new Vec(50, 60);
@@ -200,4 +155,31 @@ const testVector = vector1.clone().add(vector2);
 testVector.renderOrigin = origin;
 
 renderer.renderedAlways.push(vector1, vector2, testVector);
->>>>>>> 9c4beda83c2b4d5a9cda3b3b6e3fd43639cf261c
+renderer.texts.push({
+    text: "Vector Addition", 
+    position: origin.clone().addX(-50).addY(-20), 
+    color: "green", 
+    font: "15px serif"
+});
+
+//subtraction
+const origin2 = new Vec(200, 200);
+
+const vector3 = new Vec(100, 100);
+vector3.renderOrigin = origin2;
+vector3.color = "red";
+
+const vector4 = new Vec(80, -20);
+vector4.renderOrigin = origin2;
+vector4.color = "blue";
+
+const differenceVector = vector3.clone().subtract(vector4);
+differenceVector.renderOrigin = origin2;
+
+renderer.renderedAlways.push(vector3, vector4, differenceVector);
+renderer.texts.push({
+    text: "Vector Subtraction", 
+    position: origin2.clone().addY(-30), 
+    color: "green", 
+    font: "15px serif"
+});
