@@ -12,7 +12,7 @@ const dt = 1/60;    //time per frame
 const canv = document.getElementById("canvas");
 const ctx = canv.getContext("2d");
 
-const renderer = new Renderer(canv, ctx);
+export const renderer = new Renderer(canv, ctx);
 const fillCol = "darkGray";
 const bordCol = "black";
 

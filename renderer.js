@@ -10,6 +10,17 @@ export class Renderer {
         this.texts = [];
     }
     
+    drawVertex(vertex, color) {
+        this.renderedNextFrame.push({
+            draw: (ctx) => {
+                ctx.beginPath();
+                ctx.arc(vertex.x, vertex.y, 5, 0, Math.PI * 2, true);
+                ctx.fillStyle = color;
+                ctx.fill();
+            }
+        });
+    }
+
     drawText(textObject) {
         this.ctx.fillStyle = textObject.color;
         this.ctx.font = textObject.font;
@@ -33,6 +44,11 @@ export class Renderer {
         this.texts.forEach(text => {
             this.drawText(text);
         });
+
+        for (let i = 0; i < this.renderedNextFrame.length; i++) {
+            this.renderedNextFrame[i].draw(this.ctx); 
+        }
+        this.renderedNextFrame = []; 
     }
 
     clearFrame() {

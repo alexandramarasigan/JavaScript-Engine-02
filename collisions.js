@@ -1,4 +1,6 @@
 import {Circle} from './circle.js';
+import {Rect} from './rect.js';
+import { renderer } from './main.js';
 
 export class Collisions {
     constructor() {
@@ -20,18 +22,17 @@ export class Collisions {
     }
 
     narrowPhazeDetection(objects) {
-        for (let i=0; i<objects.length; i++) {
-            for (let j=0; j<objects.length; j++) {  //try j=i+1
-                if(j > i) {
-                    //detect collisions
-                    if(objects[i].shape instanceof Circle && 
-                        objects[j].shape instanceof Circle) {
-                        this.detectCollisionCircleCircle(objects[i], objects[j]);
-                    }   //later detect rectangle rectangle here
+        for (let i = 0; i < objects.length; i++) {
+            for (let j = i + 1; j < objects.length; j++) {
+                if (objects[i].shape instanceof Circle && objects[j].shape instanceof Rect) {
+                    this.detectCollisionCircleRectangle(objects[i].shape, objects[j].shape);
+                } else if (objects[i].shape instanceof Rect && objects[j].shape instanceof Circle) {
+                    this.detectCollisionCircleRectangle(objects[j].shape, objects[i].shape);
                 }
             }
         }
     }
+    
 
     detectAabbCollision(o1, o2) {
         let o1aabb = o1.shape.aabb;
@@ -60,7 +61,47 @@ export class Collisions {
         }
     }
 
+    detectCollisionCircleRectangle(circle, rect) {
+        let closestVertex = null;
+        let minDist = Number.MAX_VALUE;
+        rect.updateVertices();
+        for (let vertex of rect.vertices) {
+            let dist = vertex.distanceTo(circle.position);
+            if (dist < minDist) {
+                minDist = dist;
+                closestVertex = vertex;
+            }
+        }
+        if (closestVertex) {
+            renderer.drawVertex(closestVertex, "blue");
+        }
+    }
+
     //detect rectangles collisions
+
+    findClosestVertex(vertices, center) {
+        let minDist = Number.MAX_VALUE;
+        let closestVertex = null;
+
+        for (let i = 0; i < vertices.length; i++) {
+            let vertexDist = vertices[i].distanceTo(center);
+            if (vertexDist < minDist) {
+                minDist = vertexDist;
+                closestVertex = vertices[i];
+            }
+        }
+
+        if (closestVertex) {
+            renderer.renderedNextFrame.push({
+                draw: (ctx, strokeColor) => {
+                    ctx.beginPath();
+                    ctx.arc(closestVertex.x, closestVertex.y, 5, 0, Math.PI * 2, true);
+                    ctx.strokeStyle = strokeColor || "blue";
+                    ctx.stroke();
+                }
+            });
+        }
+    }
 
     pushOffObjects(o1, o2, overlap, normal) {
         o1.shape.position.subtract(normal.clone().multiply(overlap/2));
@@ -75,4 +116,5 @@ export class Collisions {
             this.pushOffObjects(o1, o2, overlap, normal);
         }
     }
+    
 }
