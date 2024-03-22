@@ -70,33 +70,45 @@ export class Collisions {
         }
     }
 
-    //detect rectangles collisions
-    detectCollisionCirclePolygon (c, p) {
+    detectCollisionCirclePolygon(c, p) {
         const vertices = p.shape.vertices;
         const cShape = c.shape;
-        let overlap, normal, axis;
-
-        overlap = Number.MAX_VALUE;
-
-        for (let i = 0; i < vertices.length; i++) {
-            const v1 = vertices[i];
-            const v2 = vertices[(i+1)%vertices.length];
-            axis = v2.clone().subtract(v1).rotateCCW90().normalize();
-            const [min1, max1] = this.projectVertices(vertices, axis);
-            const [min2, max2] = this.projectCircle(center, radius, axis);
-            
-            if (min2 >= max1 || min1 >= max2){
-                //we dont have collision
-                return;
-            }
-
-            const axisOverlap = Math.min(max2-min1, max1-min2); //finds smallest overlap
-            if (overlap >= axisOverlap) {
-                overlap = axisOverlap;
-            }
+    
+        const closestVertex = this.findClosestVertex(vertices, cShape.position);
+    
+        const axis = closestVertex.clone().subtract(cShape.position).normalize();
+    
+        const [min1, max1] = this.projectVertices(vertices, axis);
+        const [min2, max2] = this.projectCircle(cShape.position, cShape.radius, axis);
+    
+        const axisOverlap = Math.min(max2 - min1, max1 - min2);
+    
+        if (typeof overlap === 'undefined') {
+            overlap = axisOverlap;
         }
-    }
+    
+        if (axisOverlap < overlap) {
+            overlap = axisOverlap;
+            normal = axis; 
+        }
+   
+        const vec1to2 = p.shape.position.clone().subtract(c.shape.position);
+    
+        if (normal.dot(vec1to2) < 0) {
+            normal.invert();
+        }
+    
+        if (overlap < Number.MAX_VALUE) { 
+            this.collisions.push({
+                collidedPair: [c, p],
+                overlap: overlap,
+                normal: normal
+            });
+        }
 
+    }
+    
+    
     projectVertices (vertices, axis) {
         let min, max;
         min = vertices[0].dot(axis);    //first vertex projection
