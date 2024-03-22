@@ -87,6 +87,40 @@ export class Vec {
 		this.y = x * Math.sin(angle) + y * Math.cos(angle);
 		return this;
 	}
+
+	rotateCW90() {
+		const x = this.x;
+		this.x = -this.y;
+		this.y = x;
+		return this;
+	}	
+
+	rotateCCW90() {
+		const x = this.x;
+		this.x = this.y;
+		this.y = -x;
+		return this;
+	}	
+
+	invert() {
+		this.x *= -1;
+		this.y *= -1;
+		return this;
+	}
+
+	invertX() {
+		this.x *= -1;
+		return this;
+	}
+
+	invertY() {
+		this.y *= -1;
+		return this;
+	}
+
+	moveDistInDir (dist, dir) {	//dir is a unit vector
+		return this.add(dir.clone().multiply(dist));
+	}
 	
 	//non-chainable
 	clone () {	//create a new vector with xy of this
@@ -101,26 +135,35 @@ export class Vec {
 		return this.clone().subtract(v).magnitude();
 	}
 
+	dot(v) {
+		return this.x * v.x + this.y * v.y;
+	}
+
 	draw(ctx, strokeColor) {
 		if (this.color) {
-			ctx.strokeStyle = this.color;
-		} else {
-			ctx.strokeStyle = strokeColor;
+			strokeColor = this.color;
 		}
-        ctx.lineWidth = 3;
-		const renderEnd = this.renderOrigin.clone().add(this);
-		//line from vector tail to vector head
-		ctx.beginPath();
-		ctx.moveTo(this.renderOrigin.x, this.renderOrigin.y);
-		ctx.lineTo(renderEnd.x, renderEnd.y);
-
-		ctx.stroke();
-
-		//circle at vector head
-		ctx.beginPath();
-        ctx.arc(renderEnd.x, renderEnd.y, 5, 0, Math.PI*2, true);	//radius 5
-        ctx.closePath();
-        
-        ctx.stroke();
+		if(this.renderOrigin) {
+			const renderEnd = this.renderOrigin.clone().add(this);
+			ctx.beginPath();
+			ctx.moveTo(this.renderOrigin.x, this.renderOrigin.y);
+			ctx.lineTo(renderEnd.x, renderEnd.y);
+			ctx.lineWidth = 3;
+			ctx.strokeStyle = strokeColor;
+			ctx.stroke();
+			ctx.beginPath();
+			ctx.arc(renderEnd.x, renderEnd.y, 5, 0, Math.PI*2, true);	//radius 5
+			ctx.closePath();
+			ctx.strokeStyle = strokeColor;
+			ctx.lineWidth = 3;
+			ctx.stroke();
+		} else {
+			ctx.beginPath();
+			ctx.arc(this.x, this.y, 5, 0, Math.PI*2, true);	//radius 5
+			ctx.closePath();
+			ctx.strokeStyle = strokeColor;
+			ctx.lineWidth = 3;
+			ctx.stroke();
+		}
 	}
 }

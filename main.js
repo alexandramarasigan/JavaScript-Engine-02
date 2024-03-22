@@ -12,7 +12,7 @@ const dt = 1/60;    //time per frame
 const canv = document.getElementById("canvas");
 const ctx = canv.getContext("2d");
 
-const renderer = new Renderer(canv, ctx);
+export const renderer = new Renderer(canv, ctx);
 const fillCol = "darkGray";
 const bordCol = "black";
 
@@ -127,59 +127,53 @@ function addObject(shape) {
     objects.push(object);
 
 
-//test code
-let grade;
-let score = -100; //declare a variable
-switch (true) {
-    case (score < 0): grade = "Invalid Grade"; break;
-    case (score < 60): grade = "F"; break;
-    case (score < 70): grade = "D"; break;
-    case (score < 80): grade = "C"; break;
-    case (score < 90): grade = "B"; break;
-    default: grade = "A";
+//creating objects
+const gradesObject = {
+    math: 99,
+    bio: 95,
+    chem: 96,
+    english: 98,
+    bestGrade: "math",
+
+    setBioGrade: function (grade) {
+        this.bio = grade;
+    },
+
+    setGrade: function(grade, subject) {
+        this[subject] = grade;
+    }
+};
+//accessing object properties
+// console.log(gradesObject.bestGrade);
+console.log(gradesObject["bestGrade"]);
+
+gradesObject.bio = 100;
+// console.log(gradesObject);
+
+//object methods
+gradesObject.setBioGrade(90);
+gradesObject.setGrade(91, "math");
+gradesObject.setGrade(94, "chem");
+console.log(gradesObject);
+
+class GradesClass {
+    constructor(mathGrade, bio, chem, engl, bestGr) {   //constructor method creates the object
+        this.math = mathGrade;
+        this.bio = bio;
+        this.chem = chem;
+        this.english = engl;
+        this.bestGrade = bestGr;
+    }
+    //other object methods
+    addBio(score) {
+        this.bio += score;
+    }
+
 }
 
-
-//addition
-const origin = new Vec(100, 100);
-
-const vector1 = new Vec(50, 60);
-vector1.renderOrigin = origin;
-vector1.color = "red";
-
-const vector2 = new Vec(-50, 60);
-vector2.renderOrigin = origin;
-vector2.color = "blue";
-
-const testVector = vector1.clone().add(vector2);
-testVector.renderOrigin = origin;
-
-renderer.renderedAlways.push(vector1, vector2, testVector);
-renderer.texts.push({
-    text: "Vector Addition", 
-    position: origin.clone().addX(-50).addY(-20), 
-    color: "green", 
-    font: "15px serif"
-});
-
-//subtraction
-const origin2 = new Vec(200, 200);
-
-const vector3 = new Vec(100, 100);
-vector3.renderOrigin = origin2;
-vector3.color = "red";
-
-const vector4 = new Vec(80, -20);
-vector4.renderOrigin = origin2;
-vector4.color = "blue";
-
-const differenceVector = vector3.clone().subtract(vector4);
-differenceVector.renderOrigin = origin2;
-
-renderer.renderedAlways.push(vector3, vector4, differenceVector);
-renderer.texts.push({
-    text: "Vector Subtraction", 
-    position: origin2.clone().addY(-30), 
-    color: "green", 
-    font: "15px serif"
-});
+const myGrades = new GradesClass(99, 90, 91, 89, "math");   //new keyword calls constructor
+const seikohGrades = new GradesClass(91, 95, 92, 93, "bio");
+// console.log(myGrades);
+// console.log(seikohGrades);
+seikohGrades.addBio(2);
+// console.log(seikohGrades);
