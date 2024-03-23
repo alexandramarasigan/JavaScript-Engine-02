@@ -67,14 +67,37 @@ export class Collisions {
     
         let smallestOverlap = Number.MAX_VALUE;
         let collisionNormal = null;
-    
+        
+        //insert code from class for testing edges collisions
+        let axis;
+        for (let i=0; i<vertices.length; i++) {
+            const v1 = vertices[i];
+            const v2 = vertices[(i+1)%vertices.length]; //go clockwise to find pairs of vertices
+            axis = v2.clone().subtract(v1).rotateCCW90().normalize(); //rotate an edge 90 degrees CCW to get normal axis
+            //find min and max projections on this axis
+            const [min1, max1] = this.projectVertices(vertices, axis);
+            const [min2, max2] = this.projectCircle(cShape.position, cShape.radius, axis);
+            if (min1 >= max2 || min2 >= max1) {
+                return;
+            }
+
+            const axisOverlap = Math.min(max2-min1, max1-min2); //find on which axis we have the smallest overlap
+            if (axisOverlap < smallestOverlap) {
+                smallestOverlap = axisOverlap;
+                collisionNormal = axis;
+            }
+        }
+
         const closestVertex = this.findClosestVertex(vertices, cShape.position);
     
-        let axis = closestVertex.clone().subtract(cShape.position).normalize();
+        axis = closestVertex.clone().subtract(cShape.position).normalize();
         let [min1, max1] = this.projectVertices(vertices, axis);
         let [min2, max2] = this.projectCircle(cShape.position, cShape.radius, axis);
     
         let axisOverlap = Math.min(max2 - min1, max1 - min2);
+        if (min1 >= max2 || min2 >= max1) { //this means there is no collision on this axis
+            return; 
+        }
         if (axisOverlap < smallestOverlap) {
             smallestOverlap = axisOverlap;
             collisionNormal = axis;
