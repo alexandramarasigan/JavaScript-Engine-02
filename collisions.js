@@ -22,26 +22,17 @@ export class Collisions {
     }
 
     narrowPhazeDetection(objects) {
-        for (let i=0; i<objects.length; i++) {
-            for (let j=0; j<objects.length; j++) {  //try j=i+1
-                if(j > i) {
-                    //detect collisions
-                    if(objects[i].shape instanceof Circle && 
-                        objects[j].shape instanceof Circle) {
-                        this.detectCollisionCircleCircle(objects[i], objects[j]);
-                    }   //later detect rectangle rectangle here
-                    else if (objects[i].shape instanceof Circle && 
-                        objects[j].shape instanceof Rect) {
-                            this.findClosestVertex(objects[j].shape.vertices, objects[i].shape.position);
-                    }
-                    else if (objects[i].shape instanceof Rect && 
-                        objects[j].shape instanceof Circle) {
-                            this.findClosestVertex(objects[i].shape.vertices, objects[j].shape.position);
-                    }
+        for (let i = 0; i < objects.length; i++) {
+            for (let j = i + 1; j < objects.length; j++) {
+                if (objects[i].shape instanceof Circle && objects[j].shape instanceof Rect) {
+                    this.detectCollisionCirclePolygon(objects[i], objects[j]);
+                } else if (objects[i].shape instanceof Rect && objects[j].shape instanceof Circle) {
+                    this.detectCollisionCirclePolygon(objects[j], objects[i]); // Swap to maintain order
                 }
             }
         }
     }
+    
 
     detectAabbCollision(o1, o2) {
         let o1aabb = o1.shape.aabb;
@@ -74,39 +65,35 @@ export class Collisions {
         const vertices = p.shape.vertices;
         const cShape = c.shape;
     
+        let smallestOverlap = Number.MAX_VALUE;
+        let collisionNormal = null;
+    
         const closestVertex = this.findClosestVertex(vertices, cShape.position);
     
-        const axis = closestVertex.clone().subtract(cShape.position).normalize();
+        let axis = closestVertex.clone().subtract(cShape.position).normalize();
+        let [min1, max1] = this.projectVertices(vertices, axis);
+        let [min2, max2] = this.projectCircle(cShape.position, cShape.radius, axis);
     
-        const [min1, max1] = this.projectVertices(vertices, axis);
-        const [min2, max2] = this.projectCircle(cShape.position, cShape.radius, axis);
-    
-        const axisOverlap = Math.min(max2 - min1, max1 - min2);
-    
-        if (typeof overlap === 'undefined') {
-            overlap = axisOverlap;
+        let axisOverlap = Math.min(max2 - min1, max1 - min2);
+        if (axisOverlap < smallestOverlap) {
+            smallestOverlap = axisOverlap;
+            collisionNormal = axis;
         }
     
-        if (axisOverlap < overlap) {
-            overlap = axisOverlap;
-            normal = axis; 
-        }
-   
-        const vec1to2 = p.shape.position.clone().subtract(c.shape.position);
-    
-        if (normal.dot(vec1to2) < 0) {
-            normal.invert();
-        }
-    
-        if (overlap < Number.MAX_VALUE) { 
-            this.collisions.push({
-                collidedPair: [c, p],
-                overlap: overlap,
-                normal: normal
-            });
+        const vec1to2 = p.shape.position.clone().subtract(cShape.position);
+        if (collisionNormal && collisionNormal.dot(vec1to2) < 0) {
+            collisionNormal.invert();
         }
 
+        if (smallestOverlap < Number.MAX_VALUE) {
+            this.collisions.push({
+                collidedPair: [c, p],
+                overlap: smallestOverlap,
+                normal: collisionNormal
+            });
+        }
     }
+    
     
     
     projectVertices (vertices, axis) {
@@ -144,7 +131,7 @@ export class Collisions {
         return [min, max];
     }
 
-    findClosestVertex (vertices, center) {  //returns the i of the closest of vertices to a center point
+    findClosestVertex (vertices, center) {  
         let minDist = Number.MAX_VALUE;
         let vertexDist, closestVertex;
         for (let i=0; i<vertices.length; i++) {
@@ -159,16 +146,19 @@ export class Collisions {
     }
 
     pushOffObjects(o1, o2, overlap, normal) {
-        o1.shape.position.subtract(normal.clone().multiply(overlap/2));
-        o2.shape.position.add(normal.clone().multiply(overlap/2));
+        const correction = normal.clone().multiply(overlap / 2);
+        
+        o1.shape.position.subtract(correction);
+        o2.shape.position.add(correction);
     }
+    
 
     resolveCollisions() {
-        let collidedPair, overlap, normal, o1, o2;
-        for(let i=0; i<this.collisions.length; i++) {
-            ({collidedPair, overlap, normal} = this.collisions[i]);
-            [o1, o2] = collidedPair;
+        this.collisions.forEach(collision => {
+            const { collidedPair, overlap, normal } = collision;
+            const [o1, o2] = collidedPair;
             this.pushOffObjects(o1, o2, overlap, normal);
-        }
+        });
     }
+    
 }
