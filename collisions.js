@@ -38,6 +38,10 @@ export class Collisions {
                         objects[j].shape instanceof Circle) {
                             this.detectCollisionCirclePolygon(objects[j], objects[i]);
                     }
+                    else if (objects[i].shape instanceof Rect && 
+                        objects[j].shape instanceof Rect) {
+                            this.detectCollisionPolygonPolygon(objects[j], objects[i]);
+                    }
                 }
             }
         }
@@ -177,6 +181,46 @@ export class Collisions {
         }
         renderer.renderedNextFrame.push(closestVertex);
         return closestVertex;
+    }
+
+
+    detectCollisionPolygonPolygon (o1, o2) {
+        const vertices1 = o1.shape.vertices;
+        const vertices2 = o2.shape.vertices;
+        let smallestOverlap, collisionNormal, axis;
+        smallestOverlap = Number.MAX_VALUE;
+
+        const vector1to2 = o2.shape.position.clone().subtract(o1.shape.posiiton);
+
+        const edges1 = this.calculateEdges(vertices1);
+        const axes1 = [];
+        for (let i = 0; i < edges1.length; i++) {
+            axes1.push(edges1.rotateCCW90().normalize())
+        }
+        //check is axes are not on the back side of rectangle
+        for (let i = 0; i < axes1.length; i++) {
+            if(axes1[i].dot(vector1to2) < 0) {
+                //axis is in the wrong direction
+                continue;
+            }
+            //calculate overlap on axis
+            
+        }
+
+    }
+
+    calculateEdges( ) {
+        const edges = [];
+        for (let i = 0; i < vertices.length; i++) {
+            const v1 = vertices[i];
+            const v2 = vertices[(i+1)%vertices.length];
+            edges.push(v2.clone().subtract(v1));
+        }
+        return edges;
+    }
+
+    calculateOverlap() {
+
     }
 
     pushOffObjects(o1, o2, overlap, normal) {
