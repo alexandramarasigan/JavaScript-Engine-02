@@ -183,31 +183,76 @@ export class Collisions {
         return closestVertex;
     }
 
+detectCollisionPolygonPolygon(o1, o2) {
+    const vertices1 = o1.shape.vertices;
+    const vertices2 = o2.shape.vertices;
+    let smallestOverlap = Number.MAX_VALUE;
+    let collisionNormal = null;
 
-    detectCollisionPolygonPolygon (o1, o2) {
-        const vertices1 = o1.shape.vertices;
-        const vertices2 = o2.shape.vertices;
-        let smallestOverlap, collisionNormal, axis;
-        smallestOverlap = Number.MAX_VALUE;
+    const calculateOverlap = (vertices, axis) => {
+        const project = (v) => v.dot(axis);
+        const projections = vertices.map(project);
+        const min = Math.min(...projections);
+        const max = Math.max(...projections);
+        return [min, max];
+    };
 
-        const vector1to2 = o2.shape.position.clone().subtract(o1.shape.posiiton);
-
-        const edges1 = this.calculateEdges(vertices1);
-        const axes1 = [];
-        for (let i = 0; i < edges1.length; i++) {
-            axes1.push(edges1.rotateCCW90().normalize())
+    const checkOverlapAndStore = (axis) => {
+        const [min1, max1] = calculateOverlap(vertices1, axis);
+        const [min2, max2] = calculateOverlap(vertices2, axis);
+        
+        if (max1 < min2 || max2 < min1) {
+            return false;
         }
-        //check is axes are not on the back side of rectangle
-        for (let i = 0; i < axes1.length; i++) {
-            if(axes1[i].dot(vector1to2) < 0) {
-                //axis is in the wrong direction
-                continue;
-            }
-            //calculate overlap on axis
-            
+        
+        const overlap = Math.min(max1, max2) - Math.max(min1, min2);
+        if (overlap < smallestOverlap) {
+            smallestOverlap = overlap;
+            collisionNormal = axis;
         }
 
+        return true;
+    };
+
+    const calculateEdges = (vertices) => {
+        const edges = [];
+        for (let i = 0; i < vertices.length; i++) {
+            const j = (i + 1) % vertices.length;
+            edges.push(vertices[j].clone().subtract(vertices[i]));
+        }
+        return edges;
+    };
+
+    let edges = calculateEdges(vertices1);
+    for (let edge of edges) {
+        let axis = edge.rotateCCW90().normalize();
+        
+        if (!checkOverlapAndStore(axis)) {
+            return;
+        }
     }
+
+    edges = calculateEdges(vertices2);
+    for (let edge of edges) {
+        let axis = edge.rotateCCW90().normalize();
+        
+        if (!checkOverlapAndStore(axis)) {
+            return;
+        }
+    }
+
+    let vector1to2 = o2.shape.position.clone().subtract(o1.shape.position);
+    if (collisionNormal.dot(vector1to2) < 0) {
+        collisionNormal.invert();
+    }
+
+    this.collisions.push({
+        collidedPair: [o1, o2],
+        overlap: smallestOverlap,
+        normal: collisionNormal,
+    });
+}
+
 
     calculateEdges( ) {
         const edges = [];
