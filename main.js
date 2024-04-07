@@ -7,6 +7,7 @@ import {Collisions} from './collisions.js';
 import {Vec} from './vector.js';
 
 const SMALLEST_RADIUS = 10;
+const WORLD_SIZE = 5000;
 const dt = 1/60;    //time per frame
 
 const canv = document.getElementById("canvas");
@@ -90,6 +91,15 @@ function updateAndDraw() {
     col.narrowPhazeDetection(objects);  //detect all possible collisions
     col.resolveCollisionsLinear();    //push off
 
+    //remove objects that are too far
+    const objectsToRemove = [];
+    for (let i=0; i<objects.length; i++) {
+        if (objects[i].checkTooFar(WORLD_SIZE)) {
+            objectsToRemove.push(objects[i]);
+        }
+    }
+    removeObjects(objectsToRemove);
+
     //draw objects
     renderer.clearFrame();
     renderer.drawFrame(objects, fillCol, bordCol);
@@ -126,6 +136,17 @@ function addObject(shape) {
     objects.push(object);
     console.log(object.mass, object.inverseMass);
 } 
+
+function removeObjects(objectsToRemove) {
+    for (let i=0; i<objects.length; i++) {
+        for (let j=0; j<objects.length; j++) {
+            if (objects[i] == objectsToRemove[j]) {
+                objects.splice(i, 1);
+            }
+        }
+    }
+}
+
 //1 Relative Velocity
 const velocityTruckEarth = new Vec (0, 70);
 const velocityEarthTruck = velocityTruckEarth.invert();

@@ -32,4 +32,10 @@ export class RigidBody {
 		this.inverseMass = 1 / this.mass;
 	}
 
+	checkTooFar(worldSize) {
+		if (this.shape.position.magnitude() > worldSize) {
+			return true;
+		}
+	}
+
 }
