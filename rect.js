@@ -48,6 +48,11 @@ export class Rect {
         this.aabb.max.y = maxY;
     }
 
+    calculateMass(density) {
+        const area = this.width * this.height;
+        return area * density;
+    }
+
 	draw(ctx, strokeColor, fillColor) {
         ctx.save();
         ctx.translate(this.position.x, this.position.y);

@@ -122,7 +122,9 @@ function moveObjectWithMouse(object) {
 
 function addObject(shape) {
     const object = new RigidBody(shape);  
+    object.setMass();
     objects.push(object);
+    console.log(object.mass, object.inverseMass);
 } 
 //1 Relative Velocity
 const velocityTruckEarth = new Vec (0, 70);
