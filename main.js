@@ -124,4 +124,16 @@ function addObject(shape) {
     const object = new RigidBody(shape);  
     objects.push(object);
 } 
+//1 Relative Velocity
+const velocityTruckEarth = new Vec (0, 70);
+const velocityEarthTruck = velocityTruckEarth.invert();
+const velocityCarEarth = new Vec (80, 0);
+const velocityCarTruck = velocityCarEarth.add(velocityEarthTruck);
+console.log(velocityCarTruck.magnitude());
+console.log(velocityCarTruck.angle());
 
+//2 coefficient of restitution e
+const bounceHeight = 1100;
+const dropHeight = 1685;
+const e = Math.sqrt(bounceHeight / dropHeight);
+console.log(e);
