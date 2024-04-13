@@ -25,12 +25,14 @@ inp.resizeCanvas();
 inp.addListeners();
 
 const objects = [];
+//ground object
 addObject(
     new Rect(
         new Vec(canv.width / 2, canv.height),
         3*canv.width,
         canv.height*0.6
-    )
+    ),
+    true    //it is fixed
 );
 
 let shapeBeingMade = null;
@@ -138,11 +140,11 @@ function moveObjectWithMouse(object) {
     object.velocity.copy(inp.inputs.mouse.velocity);
 }
 
-function addObject(shape) {
-    const object = new RigidBody(shape);
+function addObject(shape, fixed=false) {
+    const object = new RigidBody(shape, fixed);
     object.setMass();  
     objects.push(object);
-    console.log(object.mass, object.inverseMass);
+    //console.log(object.mass, object.inverseMass);
 } 
 
 function removeObjects(objectsToRemove) {
@@ -154,17 +156,3 @@ function removeObjects(objectsToRemove) {
         }
     }
 }
-
-//1 relative velocity
-const velocityTruckEarth = new Vec (0, 70);
-const velocityEarthTruck = velocityTruckEarth.invert();
-const velocityCarEarth = new Vec (80, 0);
-const velocityCarTruck = velocityCarEarth.add(velocityEarthTruck);
-console.log(velocityCarTruck.magnitude());
-console.log(velocityCarTruck.angle());
-
-//2 coefficient of restitution e
-const bounceHeight = 1100;
-const dropHeight = 1685;
-const e = Math.sqrt(bounceHeight / dropHeight);
-console.log(e);
