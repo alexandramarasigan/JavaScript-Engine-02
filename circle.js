@@ -14,6 +14,11 @@ export class Circle {
         this.aabb.max = this.position.clone().addX(this.radius).addY(this.radius);
     }
 
+    calculateMass(density) {
+        const area = Math.PI * this.radius * this.radius;
+        return area * density;
+    }
+
 	draw(ctx, strokeColor, fillColor) {
         ctx.beginPath();
         ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2, true);

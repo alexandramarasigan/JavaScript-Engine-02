@@ -7,6 +7,10 @@ export class RigidBody {
 		this.velocity = new Vec(0, 0);
 
 		this.angularVelocity = 0.1;
+
+		this.mass;
+		this.inverseMass;
+		this.density = 1;
 	}	
 
 	updateShape(dt) {
@@ -22,5 +26,16 @@ export class RigidBody {
 		//update aabb
 		this.shape.updateAabb();
     } 
+
+	setMass() {
+		this.mass = this.shape.calculateMass(this.density);
+		this.inverseMass = 1 / this.mass;
+	}
+
+	checkTooFar (worldSize) {
+		if (this.shape.position.magnitude() > worldSize) {
+			return true;
+		}
+	}
 
 }

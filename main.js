@@ -7,6 +7,7 @@ import {Collisions} from './collisions.js';
 import {Vec} from './vector.js';
 
 const SMALLEST_RADIUS = 10;
+const WORLD_SIZE = 5000;
 const dt = 1/60;    //time per frame
 
 const canv = document.getElementById("canvas");
@@ -88,7 +89,16 @@ function updateAndDraw() {
     col.clearCollisions();
     col.broadPhazeDetection(objects);
     col.narrowPhazeDetection(objects);  //detect all possible collisions
-    col.resolveCollisions();    //push off
+    col.resolveCollisionsLinear();    //push off
+
+    //remove objects that are too far
+    const objectsToRemove = [];
+    for (let i=0; i<objects.length; i++) {
+        if (objects[i].checkTooFar(WORLD_SIZE)) {
+            objectsToRemove.push(objects[i]);
+        }
+    }
+    removeObjects(objectsToRemove);
 
     //draw objects
     renderer.clearFrame();
@@ -121,59 +131,32 @@ function moveObjectWithMouse(object) {
 }
 
 function addObject(shape) {
-    objects.push(new RigidBody(shape));
-}
-    const object = new RigidBody(shape);  
+    const object = new RigidBody(shape);
+    object.setMass();  
     objects.push(object);
+    console.log(object.mass, object.inverseMass);
+} 
 
-
-//creating objects
-const gradesObject = {
-    math: 99,
-    bio: 95,
-    chem: 96,
-    english: 98,
-    bestGrade: "math",
-
-    setBioGrade: function (grade) {
-        this.bio = grade;
-    },
-
-    setGrade: function(grade, subject) {
-        this[subject] = grade;
+function removeObjects(objectsToRemove) {
+    for (let i=0; i<objects.length; i++) {
+        for (let j=0; j<objectsToRemove.length; j++) {
+            if (objects[i] == objectsToRemove[j]) {
+                objects.splice(i, 1);
+            }
+        }
     }
-};
-//accessing object properties
-// console.log(gradesObject.bestGrade);
-console.log(gradesObject["bestGrade"]);
-
-gradesObject.bio = 100;
-// console.log(gradesObject);
-
-//object methods
-gradesObject.setBioGrade(90);
-gradesObject.setGrade(91, "math");
-gradesObject.setGrade(94, "chem");
-console.log(gradesObject);
-
-class GradesClass {
-    constructor(mathGrade, bio, chem, engl, bestGr) {   //constructor method creates the object
-        this.math = mathGrade;
-        this.bio = bio;
-        this.chem = chem;
-        this.english = engl;
-        this.bestGrade = bestGr;
-    }
-    //other object methods
-    addBio(score) {
-        this.bio += score;
-    }
-
 }
 
-const myGrades = new GradesClass(99, 90, 91, 89, "math");   //new keyword calls constructor
-const seikohGrades = new GradesClass(91, 95, 92, 93, "bio");
-// console.log(myGrades);
-// console.log(seikohGrades);
-seikohGrades.addBio(2);
-// console.log(seikohGrades);
+//1 relative velocity
+const velocityTruckEarth = new Vec (0, 70);
+const velocityEarthTruck = velocityTruckEarth.invert();
+const velocityCarEarth = new Vec (80, 0);
+const velocityCarTruck = velocityCarEarth.add(velocityEarthTruck);
+console.log(velocityCarTruck.magnitude());
+console.log(velocityCarTruck.angle());
+
+//2 coefficient of restitution e
+const bounceHeight = 1100;
+const dropHeight = 1685;
+const e = Math.sqrt(bounceHeight / dropHeight);
+console.log(e);
