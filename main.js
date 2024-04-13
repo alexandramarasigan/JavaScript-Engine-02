@@ -136,6 +136,10 @@ function addObject(shape) {
     objects.push(object);
     console.log(object.mass, object.inverseMass);
 } 
+    const object = new RigidBody(shape);
+    object.setMass();  
+    objects.push(object);
+    console.log(object.mass, object.inverseMass);
 
 function removeObjects(objectsToRemove) {
     for (let i=0; i<objects.length; i++) {
@@ -146,17 +150,3 @@ function removeObjects(objectsToRemove) {
         }
     }
 }
-
-//1 relative velocity
-const velocityTruckEarth = new Vec (0, 70);
-const velocityEarthTruck = velocityTruckEarth.invert();
-const velocityCarEarth = new Vec (80, 0);
-const velocityCarTruck = velocityCarEarth.add(velocityEarthTruck);
-console.log(velocityCarTruck.magnitude());
-console.log(velocityCarTruck.angle());
-
-//2 coefficient of restitution e
-const bounceHeight = 1100;
-const dropHeight = 1685;
-const e = Math.sqrt(bounceHeight / dropHeight);
-console.log(e);
