@@ -36,8 +36,11 @@ addObject(
 );
 
 let shapeBeingMade = null;
-//button variables
+
 let shapeSelected = 'r';
+let gravitySelected = 2;
+
+//button variables
 const circleButton = document.getElementById("c");
 const rectButton = document.getElementById("r");
 circleButton.onclick = function() {
@@ -46,6 +49,12 @@ circleButton.onclick = function() {
 rectButton.onclick = function() {
     shapeSelected = 'r';
 };
+
+//select variables
+const selectGravity = document.getElementById("gravity");
+selectGravity.addEventListener("change", function () {
+    gravitySelected = selectGravity.value;
+})
 
 //MAIN LOOP
 function updateAndDraw() {
@@ -93,6 +102,12 @@ function updateAndDraw() {
     //set gravity
     let g = 200;
     //update g based on input
+    switch (gravitySelected) {
+        case 0: g = 0; break;
+        case 1: g = 20; break;
+        case 2: g = 200; break;
+        case 3: g = 2000; break;
+    }
 
     //set object based on accelerations
     for(let i=1; i<objects.length; i++) {
