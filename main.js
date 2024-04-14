@@ -90,16 +90,34 @@ function updateAndDraw() {
         moveObjectWithMouse(inp.inputs.mouse.movedObject);
     }
 
-    //Lesson 03 - update object positions with velocity
-    for(let i=0; i<objects.length; i++) {
-        objects[i].updateShape(dt);
+    //set gravity
+    let g = 200;
+    //update g based on input
+
+    //set object based on accelerations
+    for(let i=1; i<objects.length; i++) {
+        objects[i].acceleration.zero();
+        objects[i].acceleration.y += g;
     }
+
+    //console.time('collisions');
+    //improve precision
+    const iterations = 10;
+    for(let i=0; i<iterations; i++) {
+
+
+        for(let i=0; i<objects.length; i++) {
+            objects[i].updateShape(dt / iterations);
+        }
 
     //COLLISIONS
     col.clearCollisions();
     col.broadPhazeDetection(objects);
     col.narrowPhazeDetection(objects);  //detect all possible collisions
     col.resolveCollisionsLinear();    //push off
+    }
+    
+    //console.timeEnd('collisions');
 
     //remove objects that are too far
     const objectsToRemove = [];

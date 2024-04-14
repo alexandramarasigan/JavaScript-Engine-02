@@ -13,9 +13,15 @@ export class RigidBody {
 		this.density = 1;
 
 		this.isFixed = fixed;
+
+		this.acceleration = new Vec(0, 0);
+
 	}	
 
 	updateShape(dt) {
+		const dv = this.acceleration.clone().multiply(dt);
+		this.velocity.add(dv);
+
 		const ds = this.velocity.clone().multiply(dt);  //multiply v * dt = giving you displacement per frame
 		this.shape.position.add(ds);
 
