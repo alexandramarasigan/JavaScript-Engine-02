@@ -20,7 +20,7 @@ export class Renderer {
         for (let i = 0; i<objects.length; i++) {
             const shape = objects[i].shape;
             shape.draw(this.ctx, fillCol, bordCol);
-            shape.aabb.draw(this.ctx, "red");
+            // shape.aabb.draw(this.ctx, "red");
         }
         for (let i = 0; i<this.renderedNextFrame.length; i++) {
             this.renderedNextFrame[i].draw(this.ctx, bordCol);   //draw each item from the list

@@ -283,8 +283,14 @@ export class Collisions {
     }
 
     pushOffObjects(o1, o2, overlap, normal) {
-        o1.shape.position.subtract(normal.clone().multiply(overlap/2));
-        o2.shape.position.add(normal.clone().multiply(overlap/2));
+        if (o1.isFixed) {
+            o2.shape.position.add(normal.clone().multiply(overlap));
+        } else if (o2.isFixed) {
+            o1.shape.position.subtract(normal.clone().multiply(overlap));
+        } else {
+            o1.shape.position.subtract(normal.clone().multiply(overlap/2));
+            o2.shape.position.add(normal.clone().multiply(overlap/2));
+        }
     }
 
     bounceOffObjects (o1, o2, normal) {
@@ -293,7 +299,7 @@ export class Collisions {
             return; //impossible collision
         }
         const j = -relativeVelocity.dot(normal) * (1 + this.e) / (o1.inverseMass + o2.inverseMass);
-        console.log(j);
+
         const dv1 = j * o1.inverseMass; //change of velocity for object 1
         const dv2 = j * o2.inverseMass;
         o1.velocity.subtract(normal.clone().multiply(dv1));

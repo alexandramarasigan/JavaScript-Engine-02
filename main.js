@@ -25,9 +25,22 @@ inp.resizeCanvas();
 inp.addListeners();
 
 const objects = [];
+//ground object
+addObject(
+    new Rect (
+        new Vec (canv.width / 2, canv.height),
+        3*canv.width, 
+        canv.height*0.6
+    ),
+    true    //it is fixed
+);
+
 let shapeBeingMade = null;
-//button variables
+
 let shapeSelected = 'r';
+let gravitySelected = 2;
+
+//button variables
 const circleButton = document.getElementById("c");
 const rectButton = document.getElementById("r");
 circleButton.onclick = function() {
@@ -36,6 +49,12 @@ circleButton.onclick = function() {
 rectButton.onclick = function() {
     shapeSelected = 'r';
 };
+
+//select variables
+const selectGravity = document.getElementById("gravity");
+selectGravity.addEventListener("change", function () {
+    gravitySelected = selectGravity.value;
+})
 
 //MAIN LOOP
 function updateAndDraw() {
@@ -80,16 +99,40 @@ function updateAndDraw() {
         moveObjectWithMouse(inp.inputs.mouse.movedObject);
     }
 
-    //Lesson 03 - update object positions with velocity
-    for(let i=0; i<objects.length; i++) {
-        objects[i].updateShape(dt);
+    //set gravity
+    let g = 200;
+    //update g based on input
+    switch (true) {
+        case gravitySelected == 0: g = 0; break;
+        case gravitySelected == 1: g = 20; break;
+        case gravitySelected == 2: g = 200; break;
+        case gravitySelected == 3: g = 2000; break;
     }
 
-    //COLLISIONS
-    col.clearCollisions();
-    col.broadPhazeDetection(objects);
-    col.narrowPhazeDetection(objects);  //detect all possible collisions
-    col.resolveCollisionsLinear();    //push off
+    //set object accelerations
+    for(let i=1; i<objects.length; i++) {
+        objects[i].acceleration.zero();
+        objects[i].acceleration.y += g;
+    }
+
+    // console.time('collisions');
+    //improve precision
+    const iterations = 20;
+
+    for(let i=0; i<iterations; i++) {
+
+        for(let i=0; i<objects.length; i++) {
+            objects[i].updateShape(dt / iterations);
+        }
+
+        //COLLISIONS
+        col.clearCollisions();
+        col.broadPhazeDetection(objects);
+        col.narrowPhazeDetection(objects);  //detect all possible collisions
+        col.resolveCollisionsLinear();    //push off
+    }
+
+    // console.timeEnd('collisions');
 
     //remove objects that are too far
     const objectsToRemove = [];
@@ -130,11 +173,10 @@ function moveObjectWithMouse(object) {
     object.velocity.copy(inp.inputs.mouse.velocity);
 }
 
-function addObject(shape) {
-    const object = new RigidBody(shape);
+function addObject(shape, fixed=false) {
+    const object = new RigidBody(shape, fixed);
     object.setMass();  
     objects.push(object);
-    console.log(object.mass, object.inverseMass);
 } 
     const object = new RigidBody(shape);
     object.setMass();  

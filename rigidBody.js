@@ -2,18 +2,25 @@ import {Vec} from './vector.js';
 import {Rect} from './rect.js';
 
 export class RigidBody {
-	constructor(shape) {
+	constructor(shape, fixed=false) {
 		this.shape = shape;   
 		this.velocity = new Vec(0, 0);
 
-		this.angularVelocity = 0.1;
+		this.angularVelocity = 0;
 
 		this.mass;
 		this.inverseMass;
 		this.density = 1;
+
+		this.isFixed = fixed;
+
+		this.acceleration = new Vec(0, 0);
 	}	
 
 	updateShape(dt) {
+		const dv = this.acceleration.clone().multiply(dt);
+		this.velocity.add(dv);
+
 		const ds = this.velocity.clone().multiply(dt);  //multiply v * dt = giving you displacement per frame
 		this.shape.position.add(ds);
 
@@ -29,7 +36,11 @@ export class RigidBody {
 
 	setMass() {
 		this.mass = this.shape.calculateMass(this.density);
-		this.inverseMass = 1 / this.mass;
+		if (this.isFixed) {
+			this.inverseMass = 0;	//0 for collisions means that the mass is infinity
+		} else {
+			this.inverseMass = 1 / this.mass;
+		}
 	}
 
 	checkTooFar (worldSize) {
