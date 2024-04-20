@@ -324,4 +324,10 @@ export class Collisions {
             this.bounceOffObjects(o1, o2, normal);
         }
     }
+
+    resolveCollisionsWithBounceOff() {
+
+    }   
+
+    
 }
