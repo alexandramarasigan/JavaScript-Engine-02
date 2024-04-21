@@ -12,6 +12,9 @@ export class RigidBody {
 		this.inverseMass;
 		this.density = 1;
 
+		this.inertia;
+		this.inverseInertia;
+
 		this.isFixed = fixed;
 
 		this.acceleration = new Vec(0, 0);
@@ -36,10 +39,14 @@ export class RigidBody {
 
 	setMass() {
 		this.mass = this.shape.calculateMass(this.density);
+		this.inertia = this.shape.calculateInertia(this.mass);
+
 		if (this.isFixed) {
 			this.inverseMass = 0;	//0 for collisions means that the mass is infinity
+			this.inverseInertia = 0;
 		} else {
 			this.inverseMass = 1 / this.mass;
+			this.inverseInertia = 1 / this.inertia;
 		}
 	}
 

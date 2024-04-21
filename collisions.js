@@ -325,9 +325,9 @@ export class Collisions {
         }
     }
 
-    resolveCollisionsWithBounceOff() {
+    resolveCollisionsWithRotation() {
 
     }   
 
-    
+
 }

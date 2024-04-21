@@ -19,6 +19,11 @@ export class Circle {
         return area * density;
     }
 
+    calculateInertia(mass) {
+        const inertia = 0.5 * mass * this.radius * this.radius;      // formula: I = (1/2) * m * r2
+        return inertia;
+    }
+
 	draw(ctx, strokeColor, fillColor) {
         ctx.beginPath();
         ctx.arc(this.position.x, this.position.y, this.radius, 0, Math.PI*2, true);

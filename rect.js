@@ -53,6 +53,11 @@ export class Rect {
         return area * density;
     }
 
+    calculateInertia(mass) {
+        const inertia = 1/12 * mass * (this.width * this.width + this.height * this.height); 
+        return inertia;
+    }
+
 	draw(ctx, strokeColor, fillColor) {
         ctx.save();
         ctx.translate(this.position.x, this.position.y);

@@ -139,8 +139,7 @@ function updateAndDraw() {
                 col.resolveCollisionsWithPushOff(); //Push off
             } else if (colMode == 2) {
                 col.resolveCollisionsWithBounceOff(); // bounce off
-            }  
-            else if (colMode == 3) {
+            } else if (colMode == 3) {
                 col.resolveCollisionsWithRotation();
             }  
         }
