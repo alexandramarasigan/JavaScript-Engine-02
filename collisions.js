@@ -67,10 +67,13 @@ export class Collisions {
             const overlap = s1.radius + s2.radius - dist;
             //unit vector from s1 to s2
             const normal = s2.position.clone().subtract(s1.position).normalize();   //unit vector(direction) normal(perpendicular) to contact surface
+            const point = s1.position.clone().add(normal.clone().multiply(s1.radius - overlap/2));
+            renderer.renderedNextFrame.push(point);
             this.collisions.push({  //object
                 collidedPair: [o1, o2], //[array]
                 overlap: overlap,
-                normal: normal
+                normal: normal,
+                point: point
             })
         }
     }
@@ -87,6 +90,8 @@ export class Collisions {
         for (let i = 0; i < vertices.length; i++) {
             const v1 = vertices[i];
             const v2 = vertices[(i+1)%vertices.length];
+            this.findClosestPointSegment(cShape.position, v1, v2);
+            
             axis = v2.clone().subtract(v1).rotateCCW90().normalize();
             const [min1, max1] = this.projectVertices(vertices, axis);
             const [min2, max2] = this.projectCircle(cShape.position, cShape.radius, axis);
@@ -280,6 +285,23 @@ export class Collisions {
         } else {
             return normal.invert();
         }
+    }
+
+    findClosestPointSegment (p, a, b) {     //p is point a,b are ends of a segment. All are vectors
+        const vAB = b.clone().subtract(a);
+        const vAP = p.clone().subtract(a);
+        const dot = vAB.dot(vAP);
+        const d = dot / vAB.magnitudeSq();      //dot / squared magnitude of AB
+        let closest;
+        if (d <= 0) {
+            closest = a;
+        } else if (d>= 1) {
+            closest = b;
+        } else {
+            closest = a.clone().add(vAB.multiply(d));
+        }
+        renderer.renderedNextFrame.push(closest);
+        return [closest, p.distanceToSq(closest)]
     }
 
     pushOffObjects(o1, o2, overlap, normal) {
