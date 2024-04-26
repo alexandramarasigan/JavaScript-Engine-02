@@ -78,11 +78,27 @@ export class Collisions {
         }
     }
 
+    findContactPointCirclePolygon(circleCenter, polygonVertices) {
+        let contact, v1, v2;
+        let shortestDistance = Number.MAX_VALUE;
+    
+        for (let i = 0; i < polygonVertices.length; i++) {
+            v1 = polygonVertices[i];
+            v2 = polygonVertices[(i + 1) % polygonVertices.length]; 
+            let info = this.findClosestPointSegment(circleCenter, v1, v2);
+            if (info[1] < shortestDistance) { 
+                shortestDistance = info[1];
+                contact = info[0];
+            }
+        }
+        return contact;
+    }
+
     //detect rectangles collisions
     detectCollisionCirclePolygon (c, p) {
         const vertices = p.shape.vertices;
         const cShape = c.shape;
-        let overlap, normal, axis;
+        let overlap = Number.MAX_VALUE, normal, axis;
 
         overlap = Number.MAX_VALUE;
 
@@ -123,6 +139,8 @@ export class Collisions {
             overlap = axisOverlap;
             normal = axis;
         }
+        
+        const point = this.findContactPointCirclePolygon(cShape.position, vertices);
 
         //set correct direction of the collision normal 
         //(direction of collision from 1st to 2nd object)
@@ -136,8 +154,10 @@ export class Collisions {
             collidedPair: [c, p],
             overlap: overlap,
             normal: normal,       //direction from c1 to c2
+            point: point       
         });
-
+    
+        renderer.renderedNextFrame.push(point); 
     }
 
     projectVertices (vertices, axis) {
