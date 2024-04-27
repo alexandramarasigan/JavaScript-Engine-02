@@ -137,8 +137,16 @@ export class Vec {
 		return Math.sqrt(this.x * this.x + this.y * this.y);
 	}
 
+	magnitudeSq () {
+		return this.x * this.x + this.y * this.y;
+	}
+
 	distanceTo (v) {
 		return this.clone().subtract(v).magnitude();
+	}
+
+	distanceToSq (v) {
+		return this.clone().subtract(v).magnitudeSq();
 	}
 
 	dot(v) {

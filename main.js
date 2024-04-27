@@ -39,6 +39,7 @@ let shapeBeingMade = null;
 
 let shapeSelected = 'r';
 let gravitySelected = 2;
+let colMode = 2;
 
 //button variables
 const circleButton = document.getElementById("c");
@@ -54,7 +55,11 @@ rectButton.onclick = function() {
 const selectGravity = document.getElementById("gravity");
 selectGravity.addEventListener("change", function () {
     gravitySelected = selectGravity.value;
-})
+});
+const selectCollisions = document.getElementById("collisions");
+selectCollisions.addEventListener("change", function () {
+    colMode = selectCollisions.value;
+});
 
 //MAIN LOOP
 function updateAndDraw() {
@@ -126,10 +131,20 @@ function updateAndDraw() {
         }
 
         //COLLISIONS
-        col.clearCollisions();
-        col.broadPhazeDetection(objects);
-        col.narrowPhazeDetection(objects);  //detect all possible collisions
-        col.resolveCollisionsLinear();    //push off
+        
+        if (colMode != 0) {
+            col.clearCollisions();
+            col.broadPhazeDetection(objects);
+            col.narrowPhazeDetection(objects);  //detect all possible collisions
+            if (colMode == 1) {
+                col.resolveCollisionsWithPushOff(); //push off
+            } else if (colMode == 2) {
+                col.resolveCollisionsWithBounceOff(); //bounce off  
+                
+            } else if (colMode == 3) {
+                col.resolveCollisionsWithRotation();  
+            }
+        }
     }
 
     // console.timeEnd('collisions');

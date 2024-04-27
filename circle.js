@@ -5,7 +5,7 @@ export class Circle {
 	constructor(pos, r) {
 		this.position = pos
 		this.radius = r;
-
+        this.orientation = 0;
         this.aabb = new Aabb(new Vec(0,0),new Vec(0,0));
 	}
     
@@ -17,6 +17,11 @@ export class Circle {
     calculateMass(density) {
         const area = Math.PI * this.radius * this.radius;
         return area * density;
+    }
+
+    calculateInertia(mass) {
+        const inertia = 0.5 * mass * this.radius * this.radius;      //formula: I = (1/2) * m * r^2
+        return inertia;
     }
 
 	draw(ctx, strokeColor, fillColor) {
