@@ -1,6 +1,7 @@
 import {Circle} from './circle.js';
 import {Rect} from './rect.js';
 import {renderer} from './main.js';
+import {Calc} from './calc.js';
 
 export class Collisions {
     constructor() {
@@ -243,8 +244,11 @@ export class Collisions {
             }
         }
         
+        
         const normal = this.correctNormalDirection(collisionNormal, o1, o2);
-
+        const point = this.findContactPointPolygons(vertices1, vertices2);
+        render.renderedNextFrame.push(point);
+        
         this.collisions.push({
             collidedPair: [o1, o2],
             overlap: smallestOverlap,
@@ -317,6 +321,52 @@ export class Collisions {
             }
         }
         return contact;
+    }
+
+    findContactPointPolygons(vertices1, vertices2) {
+        let contact1, contact2, p, v1, v2, minDist;
+        contact2 = null;
+        minDist = Number.MAX_VALUE;
+        for (let i = 0; i < vertices1.length; i++) {
+            p = vertices1[i];
+            for (let j = 0; j < vertices2.length; j++) {
+                v1 = vertices2[j];
+                v2 = vertices2[(j+1)%vertices2.length];
+
+                const info = this.findClosestPointSegment(p, v1, v2);
+
+                if (calc.checkNearlyEqual(info[1], minDist) && !info[0].checkNearlyEqual(contact1)) {
+                    contact2 = info[0];
+                } else if (info[1] < minDist) {
+                    contact1 = info[0];
+                    minDist = info[1];
+                }
+            }
+        }
+
+        for (let i = 0; i < vertices2.length; i++) {
+            p = vertices2[i];
+            for (let j = 0; j < vertices1.length; j++) {
+                v1 = vertices1[j];
+                v2 = vertices1[(j+1)%vertices1.length];
+
+                const info = this.findClosestPointSegment(p, v1, v2);
+
+                if (calc.checkNearlyEqual(info[1], minDist) && !info[0].checkNearlyEqual(contact1)) {
+                    contact2 = info[0];
+                } else if (info[1] < minDist) {
+                    contact1 = info[0];
+                    minDist = info[1];
+                }
+            }
+        }
+
+        if (contact2) { //two contacts
+            return calc.averageVector(contact1, contact2);
+        } else {
+            return contact1;
+        }
+
     }
 
     pushOffObjects(o1, o2, overlap, normal) {
