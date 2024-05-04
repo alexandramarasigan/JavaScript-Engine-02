@@ -1,26 +1,16 @@
 import {Vec} from './vector.js';
 import {Rect} from './rect.js';
+import {Material} from './Material.js';
 
 export class RigidBody {
-	constructor(shape, fixed=false) {
-		this.shape = shape;   
-		this.velocity = new Vec(0, 0);
-		this.acceleration = new Vec(0, 0);
-
-		this.angularVelocity = 0;
-		this.angularAcceleration = 0;
-
-		this.mass;
-		this.inverseMass;
-		this.density = 1;
-
-		this.inertia;
-		this.inverseInertia;
-
-		this.isFixed = fixed;
-
-		
-	}	
+    constructor(shape, fixed = false, material = new Material('default', 1, 0.5, 'gray')) {
+        this.shape = shape;
+        this.fixed = fixed;
+        this.material = material;
+        this.velocity = new Vec(0, 0);
+        this.acceleration = new Vec(0, 0);
+        this.setMass();
+    }
 
 	updateShape(dt) {
 		const dv = this.acceleration.clone().multiply(dt);
@@ -39,18 +29,16 @@ export class RigidBody {
 		this.shape.updateAabb();
     } 
 
-	setMass() {
-		this.mass = this.shape.calculateMass(this.density);
-		this.inertia = this.shape.calculateInertia(this.mass);
+    setMass() {
+        this.mass = this.shape.calculateMass(this.material.density);
+        this.inverseMass = this.fixed ? 0 : 1 / this.mass;
+        this.inertia = this.shape.calculateInertia(this.mass);
+        this.inverseInertia = this.fixed ? 0 : 1 / this.inertia;
+    }
 
-		if (this.isFixed) {
-			this.inverseMass = 0;	//0 for collisions means that the mass is infinity
-			this.inverseInertia = 0;
-		} else {
-			this.inverseMass = 1 / this.mass;
-			this.inverseInertia = 1 / this.inertia;
-		}
-	}
+	draw(ctx) {
+        this.shape.draw(ctx, this.material.color);  // Use color from material for drawing
+    }
 
 	checkTooFar (worldSize) {
 		if (this.shape.position.magnitude() > worldSize) {
