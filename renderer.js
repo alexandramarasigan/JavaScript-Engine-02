@@ -10,33 +10,34 @@ export class Renderer {
         this.texts = [];
     }
     
-    drawText(textObject) {
-        this.ctx.fillStyle = textObject.color;
-        this.ctx.font = textObject.font;
-        this.ctx.fillText(textObject.text, textObject.position.x, textObject.position.y);
+    clearFrame() {
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
     drawFrame(objects, fillCol, bordCol) {
-        for (let i = 0; i<objects.length; i++) {
-            const shape = objects[i].shape;
-            shape.draw(this.ctx, fillCol, bordCol);
-            // shape.aabb.draw(this.ctx, "red");
-        }
-        for (let i = 0; i<this.renderedNextFrame.length; i++) {
-            this.renderedNextFrame[i].draw(this.ctx, bordCol);   //draw each item from the list
-        }
-        this.renderedNextFrame = [];    //clear the array, basically means we only draw them once
+        this.clearFrame(); 
+        objects.forEach(object => {
+            object.draw(this.ctx); 
+        });
 
-        for (let i = 0; i<this.renderedAlways.length; i++) {
-            this.renderedAlways[i].draw(this.ctx, bordCol);
-        }
+        this.renderedNextFrame.forEach(item => {
+            item.draw(this.ctx, bordCol); 
+        });
+        this.renderedNextFrame = []; 
+
+        this.renderedAlways.forEach(item => {
+            item.draw(this.ctx, bordCol); 
+        });
+
         this.texts.forEach(text => {
             this.drawText(text);
         });
     }
 
-    clearFrame() {
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    drawText(textObject) {
+        this.ctx.fillStyle = textObject.color;
+        this.ctx.font = textObject.font;
+        this.ctx.fillText(textObject.text, textObject.position.x, textObject.position.y);
     }
 
     
