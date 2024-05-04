@@ -382,18 +382,28 @@ export class Collisions {
         }
     }
 
-    bounceOffObjects (o1, o2, normal) {
-        const relativeVelocity = o2.velocity.clone().subtract(o1.velocity);
-        if (relativeVelocity.dot(normal) > 0) {
-            return; //impossible collision
-        }
-        const j = -relativeVelocity.dot(normal) * (1 + this.e) / (o1.inverseMass + o2.inverseMass);
+    bounceOffObjects(o1, o2, normal) {
+        const e = (o1.material.restitution + o2.material.restitution) / 2;
 
-        const dv1 = j * o1.inverseMass; //change of velocity for object 1
-        const dv2 = j * o2.inverseMass;
-        o1.velocity.subtract(normal.clone().multiply(dv1));
-        o2.velocity.add(normal.clone().multiply(dv2));
+        const relativeVelocity = o2.velocity.subtract(o1.velocity);
+        const velocityAlongNormal = relativeVelocity.dot(normal);
+
+        if (velocityAlongNormal > 0) return;  
+
+        const j = -(1 + e) * velocityAlongNormal / (o1.inverseMass + o2.inverseMass);
+
+        const impulse = normal.multiply(j);
+        o1.velocity = o1.velocity.subtract(impulse.multiply(o1.inverseMass));
+        o2.velocity = o2.velocity.add(impulse.multiply(o2.inverseMass));
     }
+
+    processCollisions() {
+        for (let collision of this.collisions) {
+            const {object1, object2, collisionNormal} = collision;
+            this.bounceOffObjects(object1, object2, collisionNormal);
+        }
+    }
+    
 
     resolveCollisionsWithPushOff() {
         let collidedPair, overlap, normal, o1, o2;
