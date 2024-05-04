@@ -35,5 +35,13 @@ export class Circle {
         ctx.strokeStyle = strokeColor;
         ctx.lineWidth = 3;
         ctx.stroke();
+
+        ctx.moveTo(this.position.x, this.position.y);
+        ctx.lineTo(
+            this.position.x + this.radius * Math.cos(this.orientation),
+            this.position.y + this.radius * Math.sin(this.orientation),
+        );
+        ctx.stroke();
+
     }
 }	

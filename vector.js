@@ -3,6 +3,7 @@ export class Vec {
 		this.x = x;
 		this.y = y;
 		this.renderOrigin;
+		this.verySmallAmount = 0.05;
 	}
     //chainable methods
 	copy (v) {	//copy the xy of another vector into this
@@ -155,6 +156,10 @@ export class Vec {
 
 	angle() {
 		return Math.atan2(this.y, this.x) * 180 / Math.PI;
+	}
+
+	checkNearlyEqual(v) {
+		return this.distanceTo(v) < this.verySmallAmount;
 	}
 
 	draw(ctx, strokeColor) {

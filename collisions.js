@@ -1,6 +1,9 @@
 import {Circle} from './circle.js';
 import {Rect} from './rect.js';
 import {renderer} from './main.js';
+import {Calc} from './calc.js';
+
+const calc = new Calc();
 
 export class Collisions {
     constructor() {
@@ -68,7 +71,7 @@ export class Collisions {
             //unit vector from s1 to s2
             const normal = s2.position.clone().subtract(s1.position).normalize();   //unit vector(direction) normal(perpendicular) to contact surface
             const point = s1.position.clone().add(normal.clone().multiply(s1.radius - overlap/2));
-            renderer.renderedNextFrame.push(point);
+            // renderer.renderedNextFrame.push(point);
             this.collisions.push({  //object
                 collidedPair: [o1, o2], //[array]
                 overlap: overlap,
@@ -131,7 +134,7 @@ export class Collisions {
             normal.invert();
         }
         const point = this.findContactPointCirclePolygon(cShape.position, vertices);
-        renderer.renderedNextFrame.push(point);
+        // renderer.renderedNextFrame.push(point);
         //add collision info
         this.collisions.push({
             collidedPair: [c, p],
@@ -244,11 +247,15 @@ export class Collisions {
         }
         
         const normal = this.correctNormalDirection(collisionNormal, o1, o2);
+        const point = this.findContactPointPolygons(vertices1, vertices2);
+        
+        renderer.renderedNextFrame.push(point);
 
         this.collisions.push({
             collidedPair: [o1, o2],
             overlap: smallestOverlap,
             normal: normal,       //direction from o1 to o2, normal points out of o1
+            point: point
         });
     }
 
@@ -301,7 +308,7 @@ export class Collisions {
         } else {
             closest = a.clone().add(vAB.multiply(d));
         }
-        return [closest, p.distanceToSq(closest)];
+        return [closest, p.distanceTo(closest)];
     }
 
     findContactPointCirclePolygon(circleCenter, polygonVertices) {
@@ -317,6 +324,51 @@ export class Collisions {
             }
         }
         return contact;
+    }
+
+    findContactPointPolygons(vertices1, vertices2) {
+        let contact1, contact2, p, v1, v2, minDist;
+        contact2 = null;
+        minDist = Number.MAX_VALUE;
+        for (let i=0; i<vertices1.length; i++) {
+            p = vertices1[i];
+            for (let j=0; j<vertices2.length; j++) {
+                v1 = vertices2[j];
+                v2 = vertices2[(j+1)%vertices2.length];
+
+                const info = this.findClosestPointSegment(p, v1, v2);
+
+                if (calc.checkNearlyEqual(info[1], minDist) && !info[0].checkNearlyEqual(contact1)) {
+                    contact2 = info[0];
+                } else if (info[1] < minDist) {
+                    minDist = info[1];
+                    contact1 = info[0];
+                }
+            }
+        }
+
+        for (let i=0; i<vertices2.length; i++) {
+            p = vertices2[i];
+            for (let j=0; j<vertices1.length; j++) {
+                v1 = vertices1[j];
+                v2 = vertices1[(j+1)%vertices1.length];
+
+                const info = this.findClosestPointSegment(p, v1, v2);
+
+                if (calc.checkNearlyEqual(info[1], minDist) && !info[0].checkNearlyEqual(contact1)) {
+                    contact2 = info[0];
+                } else if (info[1] < minDist) {
+                    minDist = info[1];
+                    contact1 = info[0];
+                }
+            }
+        }
+
+        if (contact2) { //two contacts
+            return calc.averageVector([contact1, contact2]);
+        } else {    //one contact
+            return contact1;
+        } 
     }
 
     pushOffObjects(o1, o2, overlap, normal) {

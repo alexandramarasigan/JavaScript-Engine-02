@@ -5,6 +5,7 @@ export class RigidBody {
 	constructor(shape, fixed=false) {
 		this.shape = shape;   
 		this.velocity = new Vec(0, 0);
+		this.acceleration = new Vec(0, 0);
 
 		this.angularVelocity = 0;
 		this.angularAcceleration = 0;
@@ -18,7 +19,7 @@ export class RigidBody {
 
 		this.isFixed = fixed;
 
-		this.acceleration = new Vec(0, 0);
+		
 	}	
 
 	updateShape(dt) {
