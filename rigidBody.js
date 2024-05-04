@@ -1,6 +1,6 @@
 import {Vec} from './vector.js';
 import {Rect} from './rect.js';
-import {Material} from './Material.js';
+import {Material} from './material.js';
 
 export class RigidBody {
     constructor(shape, fixed = false, material = new Material('default', 1, 0.5, 'gray')) {

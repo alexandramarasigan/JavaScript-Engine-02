@@ -5,7 +5,7 @@ import {Input} from './input.js';
 import {RigidBody} from './rigidBody.js';
 import {Collisions} from './collisions.js';
 import {Vec} from './vector.js';
-import {Material} from './Material.js';
+import {Material} from './material.js';
 
 const materials = [
     new Material('Wood', 0.6, 0.2, 'brown'),
