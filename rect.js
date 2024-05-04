@@ -3,16 +3,15 @@ import {Aabb} from './aabb.js';
 
 export class Rect {
 	constructor(pos, w, h) {
-		super({position: pos, width: w, height: h});
-		this.position = pos;
-		this.width = w;
-		this.height = h;
+        this.position = pos;
+        this.width = w;
+        this.height = h;
 
         this.orientation = 0;
 
         this.vertices = [new Vec(0,0),new Vec(0,0),new Vec(0,0),new Vec(0,0)];
         this.aabb = new Aabb(new Vec(0,0),new Vec(0,0));
-	}
+    }
 
     //0 1
     //3 2
