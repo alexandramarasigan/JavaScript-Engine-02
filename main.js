@@ -5,6 +5,13 @@ import {Input} from './input.js';
 import {RigidBody} from './rigidBody.js';
 import {Collisions} from './collisions.js';
 import {Vec} from './vector.js';
+import {Material} from './Material.js';
+
+const materials = [
+    new Material('Wood', 0.6, 0.2, 'brown'),
+    new Material('Steel', 7.8, 0.05, 'grey'),
+    new Material('Rubber', 1.5, 0.8, 'black')
+];
 
 const SMALLEST_RADIUS = 10;
 const WORLD_SIZE = 5000;
@@ -40,6 +47,13 @@ let shapeBeingMade = null;
 let shapeSelected = 'r';
 let gravitySelected = 2;
 let colMode = 2;
+
+const materialSelect = document.getElementById('material');
+materialSelect.addEventListener('change', function (e) {
+    const selectedMaterialIndex = parseInt(e.target.value, 10);
+    const selectedMaterial = materials[selectedMaterialIndex];
+    window.currentSelectedMaterial = selectedMaterial;
+});
 
 //button variables
 const circleButton = document.getElementById("c");
