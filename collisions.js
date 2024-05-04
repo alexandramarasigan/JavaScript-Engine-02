@@ -286,6 +286,10 @@ export class Collisions {
     }
 
     correctNormalDirection(normal, o1, o2) {
+        if (!normal) {
+            console.error("Normal vector is null", { normal, o1, o2 });
+            return new Vec(0, 0); 
+        }
         const vecO1O2 = o2.shape.position.clone().subtract(o1.shape.position);
         const dot = normal.dot(vecO1O2);
         if (dot >= 0) {
@@ -294,6 +298,7 @@ export class Collisions {
             return normal.invert();
         }
     }
+    
 
     findClosestPointSegment (p, a, b) { //p-point, a,b - ends of a segment, all 3 are vectors
         const vAB = b.clone().subtract(a);
