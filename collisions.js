@@ -395,6 +395,43 @@ export class Collisions {
         o2.velocity.add(normal.clone().multiply(dv2));
     }
 
+    bounceOffAndRotateObjects(o1, o2, normal, point) {
+        //linear v from rotation at contact = r vectors from objects to contact points, rotated perp, multiplied by angVel 
+        const r1 = point.clone().subtract(o1.shape.position);
+        const r2 = point.clone().subtract(o2.shape.position);
+
+        const r1Perp = r1.clone().rotateCW90();
+        const r2Perp = r2.clone().rotateCW90();
+        const v1 = r1Perp.clone().multiply(o1.angularVelocity);  
+        const v2 = r2Perp.clone().multiply(o2.angularVelocity);
+
+        //relative vel at contact = relative linear vel + relative rotatonal vel
+        const relativeVelocity = o2.velocity.clone().add(v2).subtract(o1.velocity).subtract(v1);
+        const contactVelocityNormal = relativeVelocity.dot(normal);
+        if (contactVelocityNormal > 0) {
+            return 0;
+        }
+        
+        const r1PerpDotN = r1Perp.dot(normal);
+        const r2PerpDotN = r2Perp.dot(normal);
+
+        const denom = o1.inverseMass + o2.inverseMass 
+        + r1PerpDotN * r1PerpDotN * o1.inverseInertia 
+        + r2PerpDotN * r2PerpDotN * o2.inverseInertia;
+
+        let j = -(1+this.e) * contactVelocityNormal;
+        j /= denom;
+
+        const impulse = normal.clone().multiply(j);
+
+        o1.velocity.subtract(impulse.clone().multiply(o1.inverseMass));
+        o1.angularVelocity -= r1.cross(impulse) * o1.inverseInertia;
+        o2.velocity.add(impulse.clone().multiply(o2.inverseMass));
+        o2.angularVelocity += r2.cross(impulse) * o2.inverseInertia;
+
+        return j;
+    }
+
     resolveCollisionsWithPushOff() {
         let collidedPair, overlap, normal, o1, o2;
         for(let i=0; i<this.collisions.length; i++) {
