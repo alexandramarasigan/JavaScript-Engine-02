@@ -20,13 +20,16 @@ export class Collisions {
         this.collisions = [];
     }
 
-    broadPhazeDetection (objects) {
-        for(let i=0; i<objects.length; i++) {
-            for(let j=i+1; j<objects.length; j++) {
-                this.detectAabbCollision(objects[i], objects[j]);
+broadPhazeDetection(objects) {
+    objects.forEach((obj1, i) => {
+        objects.forEach((obj2, j) => {
+            if (i < j) {
+                this.detectAabbCollision(obj1, obj2);
             }
-        }
-    }
+        });
+    });
+}
+
 
     narrowPhazeDetection(objects) {
         for (let i=0; i<objects.length; i++) {
@@ -403,8 +406,6 @@ export class Collisions {
         const impulse = normal.multiply(j);
         o1.velocity = o1.velocity.subtract(impulse.multiply(o1.inverseMass));
         o2.velocity = o2.velocity.add(impulse.multiply(o2.inverseMass));
-
-        console.log(e);
     }
     
 

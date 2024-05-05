@@ -8,6 +8,7 @@ import {Vec} from './vector.js';
 import {Material} from './material.js';
 
 const materials = [
+    new Material('Ground', 10, 0.9, 'gray'),
     new Material('Wood', 0.6, 0.2, 'brown'),
     new Material('Steel', 7.8, 0.05, 'grey'),
     new Material('Rubber', 1.5, 0.8, 'black')
@@ -203,11 +204,14 @@ function moveObjectWithMouse(object) {
 }
 
 function addObject(shape, fixed = false) {
-    const material = window.currentSelectedMaterial || new Material('default', 1, 0.5, 'gray');  
-    const object = new RigidBody(shape, fixed, material);
-    object.setMass();
+    const material = window.currentSelectedMaterial || new Material('default', 1, 0.5, 'gray');
+    const object = new RigidBody(shape, fixed, material); 
+    object.setMass(); 
     objects.push(object);
 }
+
+addObject(new Rect(new Vec(canv.width / 2, canv.height - 50), 3 * canv.width, 100), true);
+
 
 
 function removeObjects(objectsToRemove) {
