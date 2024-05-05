@@ -390,19 +390,20 @@ export class Collisions {
     }
 
     bounceOffObjects(o1, o2, normal) {
-        const e = (o1.material.restitution + o2.material.restitution) / 2;
-
+        const e = (o1.material.restitution + o2.material.restitution) / 2; 
+    
         const relativeVelocity = o2.velocity.subtract(o1.velocity);
         const velocityAlongNormal = relativeVelocity.dot(normal);
-
+    
         if (velocityAlongNormal > 0) return;  
-
+    
         const j = -(1 + e) * velocityAlongNormal / (o1.inverseMass + o2.inverseMass);
-
+    
         const impulse = normal.multiply(j);
         o1.velocity = o1.velocity.subtract(impulse.multiply(o1.inverseMass));
         o2.velocity = o2.velocity.add(impulse.multiply(o2.inverseMass));
     }
+    
 
     processCollisions() {
         for (let collision of this.collisions) {
