@@ -51,8 +51,8 @@ let colMode = 2;
 const materialSelect = document.getElementById('material');
 materialSelect.addEventListener('change', function (e) {
     const selectedMaterialIndex = parseInt(e.target.value, 10);
-    const selectedMaterial = materials[selectedMaterialIndex];
-    window.currentSelectedMaterial = selectedMaterial;
+    window.currentSelectedMaterial = materials[selectedMaterialIndex];
+    console.log("Material selected:", window.currentSelectedMaterial);
 });
 
 //button variables
