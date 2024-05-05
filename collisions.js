@@ -2,6 +2,7 @@ import {Circle} from './circle.js';
 import {Rect} from './rect.js';
 import {renderer} from './main.js';
 import {Calc} from './calc.js';
+import { Vec } from './vector.js';
 
 const calc = new Calc();
 
@@ -402,6 +403,8 @@ export class Collisions {
         const impulse = normal.multiply(j);
         o1.velocity = o1.velocity.subtract(impulse.multiply(o1.inverseMass));
         o2.velocity = o2.velocity.add(impulse.multiply(o2.inverseMass));
+
+        console.log(e);
     }
     
 
