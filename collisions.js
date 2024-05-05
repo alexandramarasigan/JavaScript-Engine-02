@@ -10,6 +10,8 @@ export class Collisions {
         this.possibleCollisions = [];
         this.collisions = [];
         this.e = 0.5;   //coefficient of restitution
+        this.kf = 0.3;
+        this.sf = 0.5; // sf must be greater or equal to kf
     }
 
     clearCollisions() {
@@ -508,7 +510,14 @@ export class Collisions {
     }
 
     resolveCollisionsWithRotation() {
-
+        let collidedPair, overlap, normal, o1, o2, point;
+        for(let i=0; i<this.collisions.length; i++) {
+            ({collidedPair, overlap, normal, point} = this.collisions[i]);
+            [o1, o2] = collidedPair;
+            this.pushOffObjects(o1, o2, overlap, normal);
+            const j = this.bounceOffAndRotateObjects(o1, o2, normal, point);
+            this.addFriction(o1, o2, normal, point, j);
+        }
     }
 
 
