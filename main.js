@@ -202,11 +202,13 @@ function moveObjectWithMouse(object) {
     object.velocity.copy(inp.inputs.mouse.velocity);
 }
 
-function addObject(shape, fixed=false) {
-    const object = new RigidBody(shape, fixed);
-    object.setMass();  
+function addObject(shape, fixed = false) {
+    const material = window.currentSelectedMaterial || new Material('default', 1, 0.5, 'gray');  
+    const object = new RigidBody(shape, fixed, material);
+    object.setMass();
     objects.push(object);
-} 
+}
+
 
 function removeObjects(objectsToRemove) {
     for (let i=0; i<objects.length; i++) {
