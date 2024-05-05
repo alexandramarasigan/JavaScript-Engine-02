@@ -10,6 +10,8 @@ export class RigidBody {
         this.velocity = new Vec(0, 0);
         this.acceleration = new Vec(0, 0);
         this.setMass();
+		this.inertia = this.shape.calculateInertia(this.mass);
+        this.inverseInertia = this.fixed ? 0 : 1 / this.inertia;
     }
 
 	updateShape(dt) {
@@ -30,10 +32,13 @@ export class RigidBody {
     } 
 
     setMass() {
-        this.mass = this.shape.calculateMass(this.material.density);
-        this.inverseMass = this.fixed ? 0 : 1 / this.mass;
-        this.inertia = this.shape.calculateInertia(this.mass);
-        this.inverseInertia = this.fixed ? 0 : 1 / this.inertia;
+        if (!this.fixed) {
+            this.mass = this.shape.calculateMass(this.material.density);
+            this.inverseMass = 1 / this.mass;
+        } else {
+            this.mass = Infinity;
+            this.inverseMass = 0;
+        }
     }
 
 	draw(ctx) {
