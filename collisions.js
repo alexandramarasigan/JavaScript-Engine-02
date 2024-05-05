@@ -10,6 +10,8 @@ export class Collisions {
         this.possibleCollisions = [];
         this.collisions = [];
         this.e = 0.5;   //coefficient of restitution
+        this.kf = 0.3;
+        this.sf = 0.5; // sf must be greater or equal to kf
     }
 
     clearCollisions() {
@@ -113,6 +115,7 @@ export class Collisions {
 
         //find overlaps for axis from polygon closest vertex to center of circle
         const closestVertex = this.findClosestVertex(vertices, cShape.position);
+        console.log(axis);
         axis = closestVertex.clone().subtract(cShape.position).normalize(); //axis from circle to closest vertex on polygon
         
         const [min1, max1] = this.projectVertices(vertices, axis);
@@ -494,7 +497,14 @@ export class Collisions {
     }
 
     resolveCollisionsWithRotation() {
-
+        let collidedPair, overlap, normal, o1, o2, point;
+        for(let i=0; i<this.collisions.length; i++) {
+            ({collidedPair, overlap, normal, point} = this.collisions[i]);
+            [o1, o2] = collidedPair;
+            this.pushOffObjects(o1, o2, overlap, normal);
+            const j = this.bounceOffAndRotateObjects(o1, o2, normal, point);
+            this.addFriction(o1, o2, normal, point, j);
+        }
     }
 
 

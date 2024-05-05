@@ -154,6 +154,10 @@ export class Vec {
 		return this.x * v.x + this.y * v.y;
 	}
 
+	cross (v) {    //this - vector 1, v - vector 2, == cross(this, v)
+        return (this.x * v.y) - (this.y * v.x);
+    }
+
 	angle() {
 		return Math.atan2(this.y, this.x) * 180 / Math.PI;
 	}
@@ -161,6 +165,10 @@ export class Vec {
 	checkNearlyEqual(v) {
 		return this.distanceTo(v) < this.verySmallAmount;
 	}
+
+	checkNearlyZero () {
+        return this.magnitude() < this.verySmallAmount;
+    }
 
 	draw(ctx, strokeColor) {
 		if (this.color) {
