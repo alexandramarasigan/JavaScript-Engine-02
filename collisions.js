@@ -115,7 +115,6 @@ export class Collisions {
 
         //find overlaps for axis from polygon closest vertex to center of circle
         const closestVertex = this.findClosestVertex(vertices, cShape.position);
-        console.log(axis);
         axis = closestVertex.clone().subtract(cShape.position).normalize(); //axis from circle to closest vertex on polygon
         
         const [min1, max1] = this.projectVertices(vertices, axis);
