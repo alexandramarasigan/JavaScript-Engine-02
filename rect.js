@@ -58,28 +58,19 @@ export class Rect {
         return inertia;
     }
 
-	draw(ctx, strokeColor, fillColor) {
+    draw(ctx, strokeColor, fillColor) {
         ctx.save();
         ctx.translate(this.position.x, this.position.y);
         ctx.rotate(this.orientation);
         if (fillColor) {
             ctx.fillStyle = fillColor;
-            ctx.fillRect(
-                - this.width/2,
-                - this.height/2,
-                this.width,
-                this.height,
-            );
+            ctx.fillRect(-this.width/2, -this.height/2, this.width, this.height);
         }
         ctx.strokeStyle = strokeColor;
         ctx.lineWidth = 3;
-       	ctx.strokeRect(
-            - this.width/2,
-            - this.height/2,
-            this.width,
-            this.height,
-        );
+        ctx.strokeRect(-this.width/2, -this.height/2, this.width, this.height);
         ctx.restore();
     }
+    
 
 }
