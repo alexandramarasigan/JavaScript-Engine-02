@@ -2,7 +2,7 @@ import {Vec} from './vector.js';
 import {Aabb} from './aabb.js';
 
 export class Rect {
-	constructor(pos, w, h) {
+	constructor(pos, w, h, material) {
 		this.position = pos;
 		this.width = w;
 		this.height = h;

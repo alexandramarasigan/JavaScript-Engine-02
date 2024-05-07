@@ -2,7 +2,7 @@ import {Vec} from './vector.js';
 import {Aabb} from './aabb.js';
 
 export class Circle {
-	constructor(pos, r) {
+	constructor(pos, r, material) {
 		this.position = pos
 		this.radius = r;
         this.orientation = 0;

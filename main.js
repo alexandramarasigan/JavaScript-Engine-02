@@ -5,7 +5,7 @@ import {Input} from './input.js';
 import {RigidBody} from './rigidBody.js';
 import {Collisions} from './collisions.js';
 import {Vec} from './vector.js';
-import { Materials } from './materials.js';
+import {Materials} from './materials.js';
 
 let selectedMaterial = 'default';
 
@@ -38,7 +38,8 @@ addObject(
     new Rect (
         new Vec (canv.width / 2, canv.height),
         3*canv.width, 
-        canv.height*0.7
+        canv.height*0.7,
+        Materials['default']
     ),
     true    //it is fixed
 );
@@ -75,6 +76,7 @@ function updateAndDraw() {
     //make objects
     if (inp.inputs.lclick && shapeBeingMade == null) {
         const material = Materials[selectedMaterial]; // Get the selected material properties
+        console.log(material);
         if (shapeSelected == 'c') {
             // Create a new Circle with the selected material
             shapeBeingMade = new Circle(inp.inputs.mouse.position.clone(), SMALLEST_RADIUS, material);
