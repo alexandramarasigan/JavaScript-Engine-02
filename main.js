@@ -8,7 +8,6 @@ import {Vec} from './vector.js';
 import {Material} from './material.js';
 
 const materials = [
-    new Material('Ground', 10, 0.9, 'gray'),
     new Material('Wood', 0.6, 0.2, 'brown'),
     new Material('Steel', 7.8, 0.05, 'grey'),
     new Material('Rubber', 1.5, 0.8, 'black')

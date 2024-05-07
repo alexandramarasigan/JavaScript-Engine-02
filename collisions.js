@@ -20,15 +20,14 @@ export class Collisions {
         this.collisions = [];
     }
 
-broadPhazeDetection(objects) {
-    objects.forEach((obj1, i) => {
-        objects.forEach((obj2, j) => {
-            if (i < j) {
-                this.detectAabbCollision(obj1, obj2);
+    broadPhazeDetection (objects) {
+        for(let i=0; i<objects.length; i++) {
+            for(let j=i+1; j<objects.length; j++) {
+                this.detectAabbCollision(objects[i], objects[j]);
             }
-        });
-    });
-}
+        }
+    }
+
 
 
     narrowPhazeDetection(objects) {
