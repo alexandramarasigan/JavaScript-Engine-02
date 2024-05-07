@@ -42,6 +42,10 @@ addObject(
     true    //it is fixed
 );
 
+objects[0].shape.updateAabb();
+
+console.log(objects[0]);
+
 let shapeBeingMade = null;
 
 let shapeSelected = 'r';
