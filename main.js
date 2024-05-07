@@ -5,6 +5,14 @@ import {Input} from './input.js';
 import {RigidBody} from './rigidBody.js';
 import {Collisions} from './collisions.js';
 import {Vec} from './vector.js';
+import { Materials } from './materials.js';
+
+let selectedMaterial = 'default';
+
+const selectMaterial = document.getElementById("material");
+selectMaterial.addEventListener("change", function () {
+    selectedMaterial = selectMaterial.value;
+});
 
 const SMALLEST_RADIUS = 10;
 const WORLD_SIZE = 5000;
@@ -66,14 +74,16 @@ function updateAndDraw() {
 
     //make objects
     if (inp.inputs.lclick && shapeBeingMade == null) {
-        //lesson 03 - make rectangles with mouse
+        const material = Materials[selectedMaterial]; // Get the selected material properties
         if (shapeSelected == 'c') {
-            shapeBeingMade = new Circle(inp.inputs.mouse.position.clone(), SMALLEST_RADIUS, 0);
+            // Create a new Circle with the selected material
+            shapeBeingMade = new Circle(inp.inputs.mouse.position.clone(), SMALLEST_RADIUS, material);
         } else if (shapeSelected == 'r') {
-            shapeBeingMade = new Rect(inp.inputs.mouse.position.clone(), SMALLEST_RADIUS*2, SMALLEST_RADIUS*2);
+            // Create a new Rect with the selected material
+            shapeBeingMade = new Rect(inp.inputs.mouse.position.clone(), SMALLEST_RADIUS * 2, SMALLEST_RADIUS * 2, material);
         }
-        
     }
+
     //adjust radius
     if (inp.inputs.lclick && shapeBeingMade instanceof Circle) {
         const selectedRadius = shapeBeingMade.position.clone().subtract(inp.inputs.mouse.position).magnitude();

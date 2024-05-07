@@ -6,6 +6,7 @@ export class Rect {
 		this.position = pos;
 		this.width = w;
 		this.height = h;
+        this.material = material;
 
         this.orientation = 0;
 

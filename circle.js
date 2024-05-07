@@ -6,6 +6,7 @@ export class Circle {
 		this.position = pos
 		this.radius = r;
         this.orientation = 0;
+        this.material = material;
         this.aabb = new Aabb(new Vec(0,0),new Vec(0,0));
 	}
     
