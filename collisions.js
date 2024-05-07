@@ -10,6 +10,8 @@ export class Collisions {
         this.possibleCollisions = [];
         this.collisions = [];
         this.e = 0.5;   //coefficient of restitution
+        this.kf = 0.3;
+        this.sf = 0.5;  //sf must be greater than kf sf >= kf
     }
 
     clearCollisions() {
@@ -395,6 +397,84 @@ export class Collisions {
         o2.velocity.add(normal.clone().multiply(dv2));
     }
 
+    bounceOffAndRotateObjects(o1, o2, normal, point) {
+        //linear v from rotation at contact = r vectors from objects to contact points, rotated perp, multiplied by angVel 
+        const r1 = point.clone().subtract(o1.shape.position);
+        const r2 = point.clone().subtract(o2.shape.position);
+
+        const r1Perp = r1.clone().rotateCW90();
+        const r2Perp = r2.clone().rotateCW90();
+        const v1 = r1Perp.clone().multiply(o1.angularVelocity);  
+        const v2 = r2Perp.clone().multiply(o2.angularVelocity);
+
+        //relative vel at contact = relative linear vel + relative rotatonal vel
+        const relativeVelocity = o2.velocity.clone().add(v2).subtract(o1.velocity).subtract(v1);
+        const contactVelocityNormal = relativeVelocity.dot(normal);
+        if (contactVelocityNormal > 0) {
+            return 0;
+        }
+        
+        const r1PerpDotN = r1Perp.dot(normal);
+        const r2PerpDotN = r2Perp.dot(normal);
+
+        const denom = o1.inverseMass + o2.inverseMass 
+        + r1PerpDotN * r1PerpDotN * o1.inverseInertia 
+        + r2PerpDotN * r2PerpDotN * o2.inverseInertia;
+
+        let j = -(1+this.e) * contactVelocityNormal;
+        j /= denom;
+
+        const impulse = normal.clone().multiply(j);
+
+        o1.velocity.subtract(impulse.clone().multiply(o1.inverseMass));
+        o1.angularVelocity -= r1.cross(impulse) * o1.inverseInertia;
+        o2.velocity.add(impulse.clone().multiply(o2.inverseMass));
+        o2.angularVelocity += r2.cross(impulse) * o2.inverseInertia;
+
+        return j;
+    }
+
+    addFriction(o1, o2, normal, point, j) {
+        //linear v from rotation at contact = r vectors from objects to contact points, rotated perp, multiplied by angVel 
+        const r1 = point.clone().subtract(o1.shape.position);
+        const r2 = point.clone().subtract(o2.shape.position);
+        const r1Perp = r1.clone().rotateCW90();
+        const r2Perp = r2.clone().rotateCW90();
+        const v1 = r1Perp.clone().multiply(o1.angularVelocity);  
+        const v2 = r2Perp.clone().multiply(o2.angularVelocity);
+
+        const relativeVelocity = o2.velocity.clone().add(v2).subtract(o1.velocity).subtract(v1);
+        
+        const tangentVelocity = relativeVelocity.clone().subtract(normal.clone().multiply(relativeVelocity.dot(normal)));
+        if (tangentVelocity.checkNearlyZero()) {
+            return;
+        }
+        const tangent = tangentVelocity.normalize();
+        
+        const r1PerpDotT = r1Perp.dot(tangent);
+        const r2PerpDotT = r2Perp.dot(tangent);
+
+        const denom = o1.inverseMass + o2.inverseMass 
+        + r1PerpDotT * r1PerpDotT * o1.inverseInertia 
+        + r2PerpDotT * r2PerpDotT * o2.inverseInertia;
+
+        let jt = -relativeVelocity.dot(tangent);
+        jt /= denom;
+
+        //Coloumb's law
+        let frictionImpulse;
+        if (Math.abs(jt) <= j * this.sf) {
+            frictionImpulse = tangent.clone().multiply(jt);
+        } else {
+            frictionImpulse = tangent.clone().multiply(-j * this.kf);
+        }
+        
+        o1.velocity.subtract(frictionImpulse.clone().multiply(o1.inverseMass));
+        o1.angularVelocity -= r1.cross(frictionImpulse) * o1.inverseInertia;
+        o2.velocity.add(frictionImpulse.clone().multiply(o2.inverseMass));
+        o2.angularVelocity += r2.cross(frictionImpulse) * o2.inverseInertia;
+    }  
+
     resolveCollisionsWithPushOff() {
         let collidedPair, overlap, normal, o1, o2;
         for(let i=0; i<this.collisions.length; i++) {
@@ -411,13 +491,17 @@ export class Collisions {
             [o1, o2] = collidedPair;
             this.pushOffObjects(o1, o2, overlap, normal);
             this.bounceOffObjects(o1, o2, normal);
-            
         }
     }
 
     resolveCollisionsWithRotation() {
-
+        let collidedPair, overlap, normal, o1, o2, point;
+        for(let i=0; i<this.collisions.length; i++) {
+            ({collidedPair, overlap, normal, point} = this.collisions[i]);
+            [o1, o2] = collidedPair;
+            this.pushOffObjects(o1, o2, overlap, normal);
+            const j = this.bounceOffAndRotateObjects(o1, o2, normal, point);
+            this.addFriction(o1, o2, normal, point, j);
+        }
     }
-
-
 }
