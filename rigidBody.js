@@ -1,8 +1,9 @@
 import {Vec} from './vector.js';
 import {Rect} from './rect.js';
+import {Material} from './material.js';
 
 export class RigidBody {
-	constructor(shape, fixed=false) {
+    constructor(shape, fixed = false, material = new Material('default', 1, 0.5, 'gray')) {
 		this.shape = shape;   
 		this.velocity = new Vec(0, 0);
 		this.acceleration = new Vec(0, 0);
@@ -18,6 +19,8 @@ export class RigidBody {
 		this.inverseInertia;
 
 		this.isFixed = fixed;
+
+        this.setMass();
 
 		
 	}	
@@ -39,18 +42,16 @@ export class RigidBody {
 		this.shape.updateAabb();
     } 
 
-	setMass() {
-		this.mass = this.shape.calculateMass(this.density);
-		this.inertia = this.shape.calculateInertia(this.mass);
+    setMass() {
+        this.mass = this.shape.calculateMass(this.material.density);
+        this.inverseMass = this.fixed ? 0 : 1 / this.mass;
+        this.inertia = this.shape.calculateInertia(this.mass);
+        this.inverseInertia = this.fixed ? 0 : 1 / this.inertia;
+    }
 
-		if (this.isFixed) {
-			this.inverseMass = 0;	//0 for collisions means that the mass is infinity
-			this.inverseInertia = 0;
-		} else {
-			this.inverseMass = 1 / this.mass;
-			this.inverseInertia = 1 / this.inertia;
-		}
-	}
+    draw(ctx) {
+        this.shape.draw(ctx, this.material.color);  // Use color from material for drawing
+    }
 
 	checkTooFar (worldSize) {
 		if (this.shape.position.magnitude() > worldSize) {
