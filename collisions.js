@@ -385,12 +385,12 @@ export class Collisions {
     }
 
     bounceOffObjects (o1, o2, normal) {
-        const e = Math.min(o1.shape.material.restitution, o2.shape.material.restitution);
+        const e = (o1.shape.material.restitution + o2.shape.material.restitution) / 2;
         const relativeVelocity = o2.velocity.clone().subtract(o1.velocity);
         if (relativeVelocity.dot(normal) > 0) {
             return; //impossible collision
         }
-        const j = -relativeVelocity.dot(normal) * (1 + this.e) / (o1.inverseMass + o2.inverseMass);
+        const j = -relativeVelocity.dot(normal) * (1 + e) / (o1.inverseMass + o2.inverseMass);
 
         const dv1 = j * o1.inverseMass; //change of velocity for object 1
         const dv2 = j * o2.inverseMass;
